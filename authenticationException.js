@@ -1,4 +1,5 @@
-class AuthenticationException extends Error {
+const AuthenticationExceptionContract = require('@ostro/contracts/auth/authenticationException')
+class AuthenticationException extends AuthenticationExceptionContract {
     /**
      * All of the guards that were checked.
      *
