@@ -25,7 +25,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $provider
      * @param {*} $request
      */
-    constructor($name, $provider, $request = null) {
+    constructor($name: string, $provider: any, $request: any = null) {
         super()
         this.$request = $request
         this.$guardName = $name;
@@ -72,7 +72,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $recaller
      * @returns {any}
      */
-    async userFromRecaller($recaller) {
+    async userFromRecaller($recaller: any) {
         if (!$recaller.valid() || this.recallAttempted) {
             return;
         }
@@ -121,7 +121,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $credentials
      * @returns {any}
      */
-    async once($credentials = {}) {
+    async once($credentials: Record<string, any> = {}) {
         if (await this.validate($credentials)) {
             this.setUser(this.$lastAttempted);
 
@@ -137,7 +137,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $id
      * @returns {any}
      */
-    async onceUsingId($id) {
+    async onceUsingId($id: string) {
         let $user = await this.$provider.retrieveById($id)
 
         if (!is_null($user)) {
@@ -155,7 +155,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $credentials
      * @returns {any}
      */
-    async validate($credentials = {}) {
+    async validate($credentials: Record<string, any> = {}) {
         let $user = await this.$provider.retrieveByCredentials($credentials)
         this.$lastAttempted = $user;
 
@@ -169,7 +169,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $extraConditions
      * @returns {any}
      */
-    async basic($field = 'email', $extraConditions = {}) {
+    async basic($field: string = 'email', $extraConditions: Record<string, any> = {}) {
         if (await this.check()) {
             return;
         }
@@ -188,7 +188,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $extraConditions
      * @returns {any}
      */
-    async onceBasic($field = 'email', $extraConditions = {}) {
+    async onceBasic($field: string = 'email', $extraConditions: Record<string, any> = {}) {
         let $credentials = await this.basicCredentials(this.getRequest(), $field);
 
         if (!await this.once(Object.assign($credentials, $extraConditions))) {
@@ -203,7 +203,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $extraConditions
      * @returns {any}
      */
-    attemptBasic($request, $field, $extraConditions = {}) {
+    attemptBasic($request: any, $field: string, $extraConditions: Record<string, any> = {}) {
         if (!$request.getUser()) {
             return false;
         }
@@ -219,7 +219,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $field
      * @returns {any}
      */
-    basicCredentials($request, $field) {
+    basicCredentials($request: any, $field: string) {
         return {
             $field: $request.getUser(),
             'password': $request.getPassword()
@@ -241,7 +241,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $remember
      * @returns {any}
      */
-    async attempt($credentials = {}, $remember = false) {
+    async attempt($credentials: Record<string, any> = {}, $remember: boolean = false) {
 
         let $user = await this.$provider.retrieveByCredentials($credentials);
         this.$lastAttempted = $user
@@ -263,7 +263,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $remember
      * @returns {any}
      */
-    async attemptWhen($credentials = {}, $callbacks = null, $remember = false) {
+    async attemptWhen($credentials: Record<string, any> = {}, $callbacks: any = null, $remember: boolean = false) {
         let $user = await this.$provider.retrieveByCredentials($credentials)
         this.$lastAttempted = $user;
 
@@ -283,7 +283,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $credentials
      * @returns {any}
      */
-    async hasValidCredentials($user, $credentials) {
+    async hasValidCredentials($user: Record<string, any>, $credentials: Record<string, any>) {
         let $validated = !is_null($user) && await this.$provider.validateCredentials($user, $credentials);
 
         return $validated;
@@ -295,7 +295,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $user
      * @returns {any}
      */
-    shouldLogin($callbacks, $user) {
+    shouldLogin($callbacks: any, $user: Record<string, any>) {
 
         return true;
     }
@@ -307,7 +307,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $remember
      * @returns {any}
      */
-    async loginUsingId($id, $remember = false) {
+    async loginUsingId($id: string, $remember: boolean = false) {
         let $user = await this.$provider.retrieveById($id)
         if (!is_null($user)) {
             this.login($user, $remember);
@@ -325,7 +325,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $remember
      * @returns {any}
      */
-    async login($user, $remember = false) {
+    async login($user: Record<string, any>, $remember: boolean = false) {
         this.updateSession($user.getAuthIdentifier());
         if ($remember) {
             await this.ensureRememberTokenIsSet($user);
@@ -341,7 +341,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $id
      * @returns {any}
      */
-    updateSession($id) {
+    updateSession($id: string) {
         if (this.$session instanceof Session) {
             this.$session.put(this.getName(), $id);
         }
@@ -354,7 +354,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $user
      * @returns {any}
      */
-    async ensureRememberTokenIsSet($user) {
+    async ensureRememberTokenIsSet($user: Record<string, any>) {
         if (empty($user.getRememberToken())) {
             await this.cycleRememberToken($user);
         }
@@ -365,7 +365,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $user
      * @returns {any}
      */
-    queueRecallerCookie($user) {
+    queueRecallerCookie($user: Record<string, any>) {
         this.createRecaller(
             $user.getAuthIdentifier() + '|' + $user.getRememberToken() + '|' + $user.getAuthPassword()
         );
@@ -376,7 +376,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $value
      * @returns {any}
      */
-    createRecaller($value) {
+    createRecaller($value: any) {
         return this.getCookieJar().forever(this.getRecallerName(), $value);
     }
 
@@ -429,7 +429,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $user
      * @returns {any}
      */
-    cycleRememberToken($user) {
+    cycleRememberToken($user: Record<string, any>) {
         let $token = uid(50)
         $user.setRememberToken($token);
 
@@ -443,7 +443,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $attribute
      * @returns {any}
      */
-    async logoutOtherDevices($password, $attribute = 'password') {
+    async logoutOtherDevices($password: string, $attribute: string = 'password') {
         if (!await this.user()) {
             return;
         }
@@ -464,7 +464,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $attribute
      * @returns {any}
      */
-    async rehashUserPassword($password, $attribute) {
+    async rehashUserPassword($password: string, $attribute: string) {
         let $user = await this.user();
         if (!Hash.check($password, $user[$attribute])) {
             throw new InvalidArgumentException('The given password does not match the current password.');
@@ -524,7 +524,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $cookie
      * @returns {any}
      */
-    setCookieJar($cookie) {
+    setCookieJar($cookie: any) {
         this.$cookie = $cookie;
     }
 
@@ -549,7 +549,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $user
      * @returns {any}
      */
-    setUser($user) {
+    setUser($user: Record<string, any>) {
         this.$user = $user;
 
         this.$loggedOut = false;
@@ -570,7 +570,7 @@ class SessionGuard extends GuardHelpers {
      * @param {*} $request
      * @returns {any}
      */
-    setRequest($request) {
+    setRequest($request: any) {
         this.$request = $request;
 
         return this;

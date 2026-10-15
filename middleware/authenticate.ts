@@ -7,7 +7,7 @@ class Authenticate {
      * Create a new instance.
      * @param {*} guards
      */
-    constructor(...guards){
+    constructor(...guards: any[]) {
         this.$guards = guards;
     }
     /**
@@ -17,7 +17,7 @@ class Authenticate {
      * @param {*} next }
      * @returns {any}
      */
-    async handle({ request, next }) {
+    async handle({ request, next }: Record<string, any>) {
         await this.authenticate(request,this.$guards);
         return next();
     }
@@ -29,7 +29,7 @@ class Authenticate {
      * @param {*} $guards
      * @returns {any}
      */
-    async authenticate($request, $guards) {
+    async authenticate($request: any, $guards: any[]) {
         if (empty($guards)) {
             $guards = [null];
         }
@@ -49,7 +49,7 @@ class Authenticate {
      * @param {*} $guards
      * @returns {any}
      */
-    unauthenticated($request, $guards) {
+    unauthenticated($request: any, $guards: any[]) {
         throw new AuthenticationException(
             'Unauthenticated.', $guards, this.redirectTo($request)
         );
@@ -60,7 +60,7 @@ class Authenticate {
      * @param {*} $request
      * @returns {any}
      */
-    redirectTo($request) {
+    redirectTo($request: any) {
         //
     }
 }

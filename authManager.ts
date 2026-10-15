@@ -17,7 +17,7 @@ class AuthManager extends implement(Manager, CreatesUserProvider) {
      * Create a new instance.
      * @param {*} $app
      */
-    constructor($app) {
+    constructor($app: any) {
         super($app)
         Object.defineProperties(this, {
             $userResolver: {
@@ -34,7 +34,7 @@ class AuthManager extends implement(Manager, CreatesUserProvider) {
      * @param {*} $name
      * @returns {any}
      */
-    guard($name = null) {
+    guard($name: any = null) {
         return this.driver($name)
     }
 
@@ -43,7 +43,7 @@ class AuthManager extends implement(Manager, CreatesUserProvider) {
      * @param {*} $name
      * @returns {any}
      */
-    resolve($name) {
+    resolve($name: string) {
         let $config = this.getConfig($name);
         if (!$config) {
             throw new InvalidArgumentException(`Auth guard [${$name}] is not defined.`);
@@ -71,7 +71,7 @@ class AuthManager extends implement(Manager, CreatesUserProvider) {
      * @param {*} $name
      * @returns {any}
      */
-    createSessionDriver($config, $name) {
+    createSessionDriver($config: Record<string, any>, $name: string) {
         let $provider = this.createUserProvider($config['provider'] || null);
 
         return ($request) => {
@@ -87,7 +87,7 @@ class AuthManager extends implement(Manager, CreatesUserProvider) {
      * @param {*} $name
      * @returns {any}
      */
-    createTokenDriver($config, $name) {
+    createTokenDriver($config: Record<string, any>, $name: string) {
 
         let $provider = this.createUserProvider($config['provider'] || null)
         return ($request) => {
@@ -107,7 +107,7 @@ class AuthManager extends implement(Manager, CreatesUserProvider) {
      * @param {*} name
      * @returns {any}
      */
-    getConfig(name) {
+    getConfig(name: string) {
         return super.getConfig(`guards.${name}`);
     }
 
@@ -132,7 +132,7 @@ class AuthManager extends implement(Manager, CreatesUserProvider) {
      * @param {*} $userResolver
      * @returns {any}
      */
-    resolveUsersUsing($userResolver) {
+    resolveUsersUsing($userResolver: Function) {
         this.$userResolver = $userResolver;
         return this;
     }
@@ -143,7 +143,7 @@ class AuthManager extends implement(Manager, CreatesUserProvider) {
      * @param {*} $callback
      * @returns {any}
      */
-    provider($name, $callback) {
+    provider($name: string, $callback: Function) {
         this.$customProviderCreators[$name] = $callback;
         return this;
     }

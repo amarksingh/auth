@@ -22,7 +22,7 @@ class StartAuth {
      * @param {*} next}
      * @returns {any}
      */
-    handle({request, response, next} ) {
+    handle({request, response, next}: Record<string, any>) {
     	if(!this.$registered){
             return next()
         }

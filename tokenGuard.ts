@@ -26,7 +26,7 @@ class TokenGuard extends GuardHelpers {
      * @param {*} $storageKey
      * @param {*} $hash
      */
-    constructor($provider, $request, $inputKey = 'api_token', $storageKey = 'api_token', $hash = false) {
+    constructor($provider: any, $request: any, $inputKey: string = 'api_token', $storageKey: string = 'api_token', $hash: boolean = false) {
         super()
         this.$hash = $hash;
         this.$request = $request;
@@ -42,7 +42,7 @@ class TokenGuard extends GuardHelpers {
      * @param {*} $credentials
      * @returns {any}
      */
-    async hasValidCredentials($user, $credentials) {
+    async hasValidCredentials($user: Record<string, any>, $credentials: Record<string, any>) {
         return !is_null($user) && await this.$provider.validateCredentials($user, $credentials);
 
     }
@@ -53,7 +53,7 @@ class TokenGuard extends GuardHelpers {
      * @param {*} $credentials
      * @returns {any}
      */
-    async attempt($credentials = {}) {
+    async attempt($credentials: Record<string, any> = {}) {
         let $user = await this.$provider.retrieveByCredentials($credentials);
         this.$lastAttempted = $user;
 
@@ -117,7 +117,7 @@ class TokenGuard extends GuardHelpers {
      * @param {*} $credentials
      * @returns {any}
      */
-    async validate($credentials = {}) {
+    async validate($credentials: Record<string, any> = {}) {
 
         if (empty($credentials[this.$inputKey])) {
             return false;

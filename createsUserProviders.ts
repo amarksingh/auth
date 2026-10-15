@@ -14,7 +14,7 @@ class CreatesUserProviders {
      * @param {*} $provider
      * @returns {any}
      */
-    createUserProvider($provider = null) {
+    createUserProvider($provider: any = null) {
         let $config = this.getProviderConfiguration($provider)
         if (is_null($config)) {
             return;
@@ -44,7 +44,7 @@ class CreatesUserProviders {
      * @param {*} provider
      * @returns {any}
      */
-    getProviderConfiguration(provider) {
+    getProviderConfiguration(provider: any) {
         provider = provider || this.getDefaultUserProvider()
         if (provider) {
             return this.$container.config.get(`auth.providers.${provider}`);
@@ -56,7 +56,7 @@ class CreatesUserProviders {
      * @param {*} $config
      * @returns {any}
      */
-    createDatabaseProvider($config) {
+    createDatabaseProvider($config: Record<string, any>) {
         let $connection = this.$container['db'].connection($config['connection'] || null);
 
         return new DatabaseUserProvider($connection, this.$container['hash'], $config['table']);
@@ -67,7 +67,7 @@ class CreatesUserProviders {
      * @param {*} $config
      * @returns {any}
      */
-    createEloquentProvider($config) {
+    createEloquentProvider($config: Record<string, any>) {
         return new EloquentUserProvider(this.$container['hash'], $config['model']);
     }
 

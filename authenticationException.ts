@@ -20,7 +20,7 @@ class AuthenticationException extends Error {
      * Create a new authentication exception.
      *
      */
-    constructor($message = 'Unauthenticated.', $guards = [], $redirectTo = null) {
+    constructor($message: string = 'Unauthenticated.', $guards: any[] = [], $redirectTo: any = null) {
         super($message);
         this.$guards = $guards;
         this.$redirectTo = $redirectTo;

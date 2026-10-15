@@ -6,7 +6,7 @@ class RedirectIfAuthenticated {
      * Create a new instance.
      * @param {*} $guards
      */
-    constructor(...$guards) {
+    constructor(...$guards: any[]) {
         this.$guards = $guards;
     }
 
@@ -19,7 +19,7 @@ class RedirectIfAuthenticated {
      * @param {*} redirect }
      * @returns {any}
      */
-    async handle({ request, next, auth, redirect }) {
+    async handle({ request, next, auth, redirect }: Record<string, any>) {
         let $guards = empty(this.$guards) ? [null] : this.$guards;
 
         for (let $guard of $guards) {
@@ -36,7 +36,7 @@ class RedirectIfAuthenticated {
      * @param {*} $request
      * @returns {any}
      */
-    redirectTo($request) {
+    redirectTo($request: any) {
         return '/';
     }
 }

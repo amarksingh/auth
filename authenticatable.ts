@@ -54,7 +54,7 @@ class Authenticatable {
      * @param {*} $value
      * @returns {any}
      */
-    setRememberToken($value) {
+    setRememberToken($value: any) {
         if (this.getRememberTokenName()) {
             this[this.getRememberTokenName()] = $value;
         }
@@ -83,7 +83,7 @@ class Authenticatable {
      * @param {*} $value
      * @returns {any}
      */
-    setApiToken($value) {
+    setApiToken($value: any) {
         if (this.getApiTokenName()) {
             this[this.getApiTokenName()] = $value;
         }

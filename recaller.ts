@@ -9,7 +9,7 @@ class Recaller {
      * Create a new instance.
      * @param {*} $recaller
      */
-    constructor($recaller) {
+    constructor($recaller: any) {
         this.$recaller = $recaller;
     }
 

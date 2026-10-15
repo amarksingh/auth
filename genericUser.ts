@@ -8,7 +8,7 @@ class GenericUser extends GenericUserInterface {
      * Create a new instance.
      * @param {*} $attributes
      */
-    constructor($attributes) {
+    constructor($attributes: Record<string, any>) {
         super()
         this.$attributes = $attributes;
     }
@@ -50,7 +50,7 @@ class GenericUser extends GenericUserInterface {
      * @param {*} $value
      * @returns {any}
      */
-    setRememberToken($value) {
+    setRememberToken($value: any) {
         this.$attributes[this.getRememberTokenName()] = $value;
     }
 
@@ -67,7 +67,7 @@ class GenericUser extends GenericUserInterface {
      * @param {*} $value
      * @returns {any}
      */
-    setApiToken($value) {
+    setApiToken($value: any) {
         this.$attributes[this.getApiTokenName()] = $value;
     }
 
@@ -93,7 +93,7 @@ class GenericUser extends GenericUserInterface {
      * @param {*} $key
      * @returns {any}
      */
-    __get($key) {
+    __get($key: string) {
         return this.$attributes[$key];
     }
 
@@ -103,7 +103,7 @@ class GenericUser extends GenericUserInterface {
      * @param {*} $value
      * @returns {any}
      */
-    __set($key, $value) {
+    __set($key: string, $value: any) {
         this.$attributes[$key] = $value;
     }
 

@@ -61,7 +61,7 @@ class GuardHelpers {
      * @param {*} $user
      * @returns {any}
      */
-    setUser($user) {
+    setUser($user: Record<string, any>) {
         this.$user = $user;
 
         return this;
@@ -80,7 +80,7 @@ class GuardHelpers {
      * @param {*} $provider
      * @returns {any}
      */
-    setProvider($provider) {
+    setProvider($provider: any) {
         this.$provider = $provider;
     }
 }

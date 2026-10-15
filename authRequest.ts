@@ -10,7 +10,7 @@ class Auth extends Macroable {
      * @param {*} request
      * @param {*} manager
      */
-    constructor(request, manager) {
+    constructor(request: any, manager: any) {
         super()
         Object.defineProperties(this, {
             $request: {
@@ -35,7 +35,7 @@ class Auth extends Macroable {
      * @param {*} $name
      * @returns {any}
      */
-    guard($name) {
+    guard($name: string) {
         if (!$name) {
             $name = this.$defaultGuard
         }
@@ -47,7 +47,7 @@ class Auth extends Macroable {
      * @param {*} $name
      * @returns {any}
      */
-    shouldUse($name) {
+    shouldUse($name: string) {
         $name = $name || this.$defaultGuard;
 
         this.setDefaultDriverForCurrentRequest($name);
@@ -60,7 +60,7 @@ class Auth extends Macroable {
      * @param {*} $name
      * @returns {any}
      */
-    setDefaultDriverForCurrentRequest($name) {
+    setDefaultDriverForCurrentRequest($name: string) {
         this.$defaultGuard = $name;
     }
 
@@ -70,7 +70,7 @@ class Auth extends Macroable {
      * @param {*} method
      * @returns {any}
      */
-    __get(target, method) {
+    __get(target: Record<string, any>, method: string) {
         return this.make(target.guard(this.$defaultGuard), method)
     }
 

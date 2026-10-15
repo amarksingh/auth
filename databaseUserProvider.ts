@@ -17,7 +17,7 @@ class DatabaseUserProvider {
      * @param {*} $hasher
      * @param {*} $table
      */
-    constructor($conn, $hasher, $table) {
+    constructor($conn: any, $hasher: boolean, $table: string) {
         this.$conn = $conn;
         this.$table = $table;
         this.$hasher = $hasher;
@@ -29,7 +29,7 @@ class DatabaseUserProvider {
      * @param {*} $identifier
      * @returns {any}
      */
-    async retrieveById($identifier) {
+    async retrieveById($identifier: string) {
         let $user = await this.$conn.table(this.$table).find($identifier);
 
         return this.getGenericUser($user);
@@ -42,7 +42,7 @@ class DatabaseUserProvider {
      * @param {*} $token
      * @returns {any}
      */
-    async retrieveByToken($identifier, $token) {
+    async retrieveByToken($identifier: string, $token: string) {
         let $user = this.getGenericUser(
             await this.$conn.table(this.$table).where($identifier, $token).first()
         );
@@ -58,7 +58,7 @@ class DatabaseUserProvider {
      * @param {*} $token
      * @returns {any}
      */
-    async updateRememberToken($user, $token) {
+    async updateRememberToken($user: Record<string, any>, $token: string) {
         await this.$conn.table(this.$table)
             .where($user.getAuthIdentifierName(), $user.getAuthIdentifier())
             .update({
@@ -72,7 +72,7 @@ class DatabaseUserProvider {
      * @param {*} $credentials
      * @returns {any}
      */
-    async retrieveByCredentials($credentials = {}) {
+    async retrieveByCredentials($credentials: Record<string, any> = {}) {
         if (empty($credentials) || (count($credentials) === 1 && String.contains(this.firstCredentialKey($credentials), 'password'))) {
             return;
         }
@@ -102,7 +102,7 @@ class DatabaseUserProvider {
      * @param {*} $credentials
      * @returns {any}
      */
-    firstCredentialKey($credentials) {
+    firstCredentialKey($credentials: Record<string, any>) {
         for (let $key in $credentials) {
             return $key;
         }
@@ -113,7 +113,7 @@ class DatabaseUserProvider {
      * @param {*} $user
      * @returns {any}
      */
-    getGenericUser($user) {
+    getGenericUser($user: Record<string, any>) {
         if (!is_null($user)) {
             return new GenericUser($user);
         }
@@ -125,7 +125,7 @@ class DatabaseUserProvider {
      * @param {*} $credentials
      * @returns {any}
      */
-    validateCredentials($user, $credentials = {}) {
+    validateCredentials($user: Record<string, any>, $credentials: Record<string, any> = {}) {
         return this.$hasher.check(
             $credentials['password'], $user.getAuthPassword()
         );

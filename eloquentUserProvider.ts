@@ -12,7 +12,7 @@ class EloquentUserProvider {
      * @param {*} $hasher
      * @param {*} $model
      */
-    constructor($hasher, $model) {
+    constructor($hasher: boolean, $model: any) {
         this.$model = $model;
         this.$hasher = $hasher;
     }
@@ -22,7 +22,7 @@ class EloquentUserProvider {
      * @param {*} $identifier
      * @returns {any}
      */
-    retrieveById($identifier) {
+    retrieveById($identifier: string) {
         let $model = this.createModel();
 
         return this.newModelQuery($model)
@@ -37,7 +37,7 @@ class EloquentUserProvider {
      * @param {*} $token
      * @returns {any}
      */
-    async retrieveByToken($identifier, $token) {
+    async retrieveByToken($identifier: string, $token: string) {
         let $model = this.createModel();
 
         let $retrievedModel = await this.newModelQuery($model).where(
@@ -59,7 +59,7 @@ class EloquentUserProvider {
      * @param {*} $token
      * @returns {any}
      */
-    updateRememberToken($user, $token) {
+    updateRememberToken($user: Record<string, any>, $token: string) {
         $user.setRememberToken($token);
 
         return $user.save();
@@ -71,7 +71,7 @@ class EloquentUserProvider {
      * @param {*} $credentials
      * @returns {any}
      */
-    retrieveByCredentials($credentials) {
+    retrieveByCredentials($credentials: Record<string, any>) {
         if (empty($credentials) ||
             (count($credentials) === 1 &&
                 String.contains(this.firstCredentialKey($credentials), 'password'))) {
@@ -100,7 +100,7 @@ class EloquentUserProvider {
      * @param {*} $credentials
      * @returns {any}
      */
-    firstCredentialKey($credentials) {
+    firstCredentialKey($credentials: Record<string, any>) {
         for (let $key in $credentials) {
             return $key;
         }
@@ -112,7 +112,7 @@ class EloquentUserProvider {
      * @param {*} $credentials
      * @returns {any}
      */
-    validateCredentials($user, $credentials) {
+    validateCredentials($user: Record<string, any>, $credentials: Record<string, any>) {
         let $plain = $credentials['password'];
         return this.$hasher.check($plain, $user.getAuthPassword());
     }
@@ -122,7 +122,7 @@ class EloquentUserProvider {
      * @param {*} $model
      * @returns {any}
      */
-    newModelQuery($model = null) {
+    newModelQuery($model: any = null) {
         return is_null($model) ?
             this.createModel().newQuery() :
             $model.newQuery();
@@ -149,7 +149,7 @@ class EloquentUserProvider {
      * @param {*} $hasher
      * @returns {any}
      */
-    setHasher($hasher) {
+    setHasher($hasher: boolean) {
         this.$hasher = $hasher;
 
         return this;
@@ -168,7 +168,7 @@ class EloquentUserProvider {
      * @param {*} $model
      * @returns {any}
      */
-    setModel($model) {
+    setModel($model: any) {
         this.$model = $model;
 
         return this;
