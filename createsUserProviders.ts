@@ -2,10 +2,18 @@ const InvalidArgumentException = require('@ostro/support/exceptions/invalidArgum
 const DatabaseUserProvider = require('./databaseUserProvider')
 const EloquentUserProvider = require('./eloquentUserProvider')
 
+/**
+ * Class CreatesUserProviders.
+ */
 class CreatesUserProviders {
 
     $customProviderCreators = {};
 
+    /**
+     * createUserProvider method.
+     * @param {*} $provider
+     * @returns {any}
+     */
     createUserProvider($provider = null) {
         let $config = this.getProviderConfiguration($provider)
         if (is_null($config)) {
@@ -31,6 +39,11 @@ class CreatesUserProviders {
         }
     }
 
+    /**
+     * getProviderConfiguration method.
+     * @param {*} provider
+     * @returns {any}
+     */
     getProviderConfiguration(provider) {
         provider = provider || this.getDefaultUserProvider()
         if (provider) {
@@ -38,16 +51,30 @@ class CreatesUserProviders {
         }
     }
 
+    /**
+     * createDatabaseProvider method.
+     * @param {*} $config
+     * @returns {any}
+     */
     createDatabaseProvider($config) {
         let $connection = this.$container['db'].connection($config['connection'] || null);
 
         return new DatabaseUserProvider($connection, this.$container['hash'], $config['table']);
     }
 
+    /**
+     * createEloquentProvider method.
+     * @param {*} $config
+     * @returns {any}
+     */
     createEloquentProvider($config) {
         return new EloquentUserProvider(this.$container['hash'], $config['model']);
     }
 
+    /**
+     * getDefaultUserProvider method.
+     * @returns {any}
+     */
     getDefaultUserProvider() {
         return this.$container.config.get('auth.defaults.provider');
     }

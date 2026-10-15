@@ -3,6 +3,9 @@ const { implement } = require('@ostro/support/function')
 const { createHash } = require('crypto');
 const Crypt = require('@ostro/support/facades/crypt')
 
+/**
+ * Class TokenGuard.
+ */
 class TokenGuard extends GuardHelpers {
 
     $hash;
@@ -15,6 +18,14 @@ class TokenGuard extends GuardHelpers {
 
     $storageKey = 'api_token';
 
+    /**
+     * Create a new instance.
+     * @param {*} $provider
+     * @param {*} $request
+     * @param {*} $inputKey
+     * @param {*} $storageKey
+     * @param {*} $hash
+     */
     constructor($provider, $request, $inputKey = 'api_token', $storageKey = 'api_token', $hash = false) {
         super()
         this.$hash = $hash;
@@ -24,11 +35,24 @@ class TokenGuard extends GuardHelpers {
         this.$storageKey = $storageKey;
     }
 
+    /**
+     * hasValidCredentials method.
+     * @async
+     * @param {*} $user
+     * @param {*} $credentials
+     * @returns {any}
+     */
     async hasValidCredentials($user, $credentials) {
         return !is_null($user) && await this.$provider.validateCredentials($user, $credentials);
 
     }
 
+    /**
+     * attempt method.
+     * @async
+     * @param {*} $credentials
+     * @returns {any}
+     */
     async attempt($credentials = {}) {
         let $user = await this.$provider.retrieveByCredentials($credentials);
         this.$lastAttempted = $user;
@@ -43,6 +67,11 @@ class TokenGuard extends GuardHelpers {
         return false;
     }
 
+    /**
+     * user method.
+     * @async
+     * @returns {any}
+     */
     async user() {
 
         if (!is_null(this.$user)) {
@@ -61,6 +90,10 @@ class TokenGuard extends GuardHelpers {
         return this.$user = $user;
     }
 
+    /**
+     * getTokenForRequest method.
+     * @returns {any}
+     */
     getTokenForRequest() {
         let $token = this.$request.getQuery(this.$inputKey);
         if (empty($token)) {
@@ -78,6 +111,12 @@ class TokenGuard extends GuardHelpers {
         return $token;
     }
 
+    /**
+     * validate method.
+     * @async
+     * @param {*} $credentials
+     * @returns {any}
+     */
     async validate($credentials = {}) {
 
         if (empty($credentials[this.$inputKey])) {

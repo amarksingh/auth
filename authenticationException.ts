@@ -1,3 +1,6 @@
+/**
+ * Class AuthenticationException.
+ */
 class AuthenticationException extends Error {
     /**
      * All of the guards that were checked.

@@ -1,4 +1,10 @@
+/**
+ * Class StartAuth.
+ */
 class StartAuth {
+    /**
+     * Create a new instance.
+     */
     constructor() {
         this.$auth = this.$app['auth'];
 
@@ -9,6 +15,13 @@ class StartAuth {
         }
     }
 
+    /**
+     * handle method.
+     * @param {*} {request
+     * @param {*} response
+     * @param {*} next}
+     * @returns {any}
+     */
     handle({request, response, next} ) {
     	if(!this.$registered){
             return next()

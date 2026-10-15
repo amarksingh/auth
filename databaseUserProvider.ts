@@ -1,5 +1,8 @@
 const GenericUser = require('./genericUser')
 const { hash_equals } = require('@ostro/support/function')
+/**
+ * Class DatabaseUserProvider.
+ */
 class DatabaseUserProvider {
 
     $conn;
@@ -8,18 +11,37 @@ class DatabaseUserProvider {
 
     $hasher;
 
+    /**
+     * Create a new instance.
+     * @param {*} $conn
+     * @param {*} $hasher
+     * @param {*} $table
+     */
     constructor($conn, $hasher, $table) {
         this.$conn = $conn;
         this.$table = $table;
         this.$hasher = $hasher;
     }
 
+    /**
+     * retrieveById method.
+     * @async
+     * @param {*} $identifier
+     * @returns {any}
+     */
     async retrieveById($identifier) {
         let $user = await this.$conn.table(this.$table).find($identifier);
 
         return this.getGenericUser($user);
     }
 
+    /**
+     * retrieveByToken method.
+     * @async
+     * @param {*} $identifier
+     * @param {*} $token
+     * @returns {any}
+     */
     async retrieveByToken($identifier, $token) {
         let $user = this.getGenericUser(
             await this.$conn.table(this.$table).where($identifier, $token).first()
@@ -29,6 +51,13 @@ class DatabaseUserProvider {
             $user : null;
     }
 
+    /**
+     * updateRememberToken method.
+     * @async
+     * @param {*} $user
+     * @param {*} $token
+     * @returns {any}
+     */
     async updateRememberToken($user, $token) {
         await this.$conn.table(this.$table)
             .where($user.getAuthIdentifierName(), $user.getAuthIdentifier())
@@ -37,6 +66,12 @@ class DatabaseUserProvider {
             });
     }
 
+    /**
+     * retrieveByCredentials method.
+     * @async
+     * @param {*} $credentials
+     * @returns {any}
+     */
     async retrieveByCredentials($credentials = {}) {
         if (empty($credentials) || (count($credentials) === 1 && String.contains(this.firstCredentialKey($credentials), 'password'))) {
             return;
@@ -62,18 +97,34 @@ class DatabaseUserProvider {
         return this.getGenericUser($user);
     }
 
+    /**
+     * firstCredentialKey method.
+     * @param {*} $credentials
+     * @returns {any}
+     */
     firstCredentialKey($credentials) {
         for (let $key in $credentials) {
             return $key;
         }
     }
 
+    /**
+     * getGenericUser method.
+     * @param {*} $user
+     * @returns {any}
+     */
     getGenericUser($user) {
         if (!is_null($user)) {
             return new GenericUser($user);
         }
     }
 
+    /**
+     * validateCredentials method.
+     * @param {*} $user
+     * @param {*} $credentials
+     * @returns {any}
+     */
     validateCredentials($user, $credentials = {}) {
         return this.$hasher.check(
             $credentials['password'], $user.getAuthPassword()

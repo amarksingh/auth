@@ -4,6 +4,9 @@ const Recaller = require('./recaller')
 const { implement } = require('@ostro/support/function')
 const Session = require('@ostro/contracts/session/session')
 const Hash = require('@ostro/support/facades/hash')
+/**
+ * Class SessionGuard.
+ */
 class SessionGuard extends GuardHelpers {
 
     $viaRemember = false;
@@ -16,6 +19,12 @@ class SessionGuard extends GuardHelpers {
 
     $user = null;
 
+    /**
+     * Create a new instance.
+     * @param {*} $name
+     * @param {*} $provider
+     * @param {*} $request
+     */
     constructor($name, $provider, $request = null) {
         super()
         this.$request = $request
@@ -25,6 +34,11 @@ class SessionGuard extends GuardHelpers {
         this.$cookie = $request.cookie;
     }
 
+    /**
+     * user method.
+     * @async
+     * @returns {any}
+     */
     async user() {
         if (this.$loggedOut) {
             return;
@@ -52,6 +66,12 @@ class SessionGuard extends GuardHelpers {
         return this.$user;
     }
 
+    /**
+     * userFromRecaller method.
+     * @async
+     * @param {*} $recaller
+     * @returns {any}
+     */
     async userFromRecaller($recaller) {
         if (!$recaller.valid() || this.recallAttempted) {
             return;
@@ -66,6 +86,10 @@ class SessionGuard extends GuardHelpers {
         return $user;
     }
 
+    /**
+     * recaller method.
+     * @returns {any}
+     */
     recaller() {
         if (is_null(this.$cookie)) {
             return;
@@ -76,6 +100,11 @@ class SessionGuard extends GuardHelpers {
         }
     }
 
+    /**
+     * id method.
+     * @async
+     * @returns {any}
+     */
     async id() {
         if (this.$loggedOut) {
             return;
@@ -86,6 +115,12 @@ class SessionGuard extends GuardHelpers {
             this.$session.get(this.getName());
     }
 
+    /**
+     * once method.
+     * @async
+     * @param {*} $credentials
+     * @returns {any}
+     */
     async once($credentials = {}) {
         if (await this.validate($credentials)) {
             this.setUser(this.$lastAttempted);
@@ -96,6 +131,12 @@ class SessionGuard extends GuardHelpers {
         return false;
     }
 
+    /**
+     * onceUsingId method.
+     * @async
+     * @param {*} $id
+     * @returns {any}
+     */
     async onceUsingId($id) {
         let $user = await this.$provider.retrieveById($id)
 
@@ -108,6 +149,12 @@ class SessionGuard extends GuardHelpers {
         return false;
     }
 
+    /**
+     * validate method.
+     * @async
+     * @param {*} $credentials
+     * @returns {any}
+     */
     async validate($credentials = {}) {
         let $user = await this.$provider.retrieveByCredentials($credentials)
         this.$lastAttempted = $user;
@@ -115,6 +162,13 @@ class SessionGuard extends GuardHelpers {
         return this.hasValidCredentials($user, $credentials);
     }
 
+    /**
+     * basic method.
+     * @async
+     * @param {*} $field
+     * @param {*} $extraConditions
+     * @returns {any}
+     */
     async basic($field = 'email', $extraConditions = {}) {
         if (await this.check()) {
             return;
@@ -127,6 +181,13 @@ class SessionGuard extends GuardHelpers {
         return this.failedBasicResponse();
     }
 
+    /**
+     * onceBasic method.
+     * @async
+     * @param {*} $field
+     * @param {*} $extraConditions
+     * @returns {any}
+     */
     async onceBasic($field = 'email', $extraConditions = {}) {
         let $credentials = await this.basicCredentials(this.getRequest(), $field);
 
@@ -135,6 +196,13 @@ class SessionGuard extends GuardHelpers {
         }
     }
 
+    /**
+     * attemptBasic method.
+     * @param {*} $request
+     * @param {*} $field
+     * @param {*} $extraConditions
+     * @returns {any}
+     */
     attemptBasic($request, $field, $extraConditions = {}) {
         if (!$request.getUser()) {
             return false;
@@ -145,6 +213,12 @@ class SessionGuard extends GuardHelpers {
         ));
     }
 
+    /**
+     * basicCredentials method.
+     * @param {*} $request
+     * @param {*} $field
+     * @returns {any}
+     */
     basicCredentials($request, $field) {
         return {
             $field: $request.getUser(),
@@ -152,10 +226,21 @@ class SessionGuard extends GuardHelpers {
         };
     }
 
+    /**
+     * failedBasicResponse method.
+     * @returns {any}
+     */
     failedBasicResponse() {
         throw new UnauthorizedHttpException('Basic', 'Invalid credentials.');
     }
 
+    /**
+     * attempt method.
+     * @async
+     * @param {*} $credentials
+     * @param {*} $remember
+     * @returns {any}
+     */
     async attempt($credentials = {}, $remember = false) {
 
         let $user = await this.$provider.retrieveByCredentials($credentials);
@@ -170,6 +255,14 @@ class SessionGuard extends GuardHelpers {
         return false;
     }
 
+    /**
+     * attemptWhen method.
+     * @async
+     * @param {*} $credentials
+     * @param {*} $callbacks
+     * @param {*} $remember
+     * @returns {any}
+     */
     async attemptWhen($credentials = {}, $callbacks = null, $remember = false) {
         let $user = await this.$provider.retrieveByCredentials($credentials)
         this.$lastAttempted = $user;
@@ -183,17 +276,37 @@ class SessionGuard extends GuardHelpers {
         return false;
     }
 
+    /**
+     * hasValidCredentials method.
+     * @async
+     * @param {*} $user
+     * @param {*} $credentials
+     * @returns {any}
+     */
     async hasValidCredentials($user, $credentials) {
         let $validated = !is_null($user) && await this.$provider.validateCredentials($user, $credentials);
 
         return $validated;
     }
 
+    /**
+     * shouldLogin method.
+     * @param {*} $callbacks
+     * @param {*} $user
+     * @returns {any}
+     */
     shouldLogin($callbacks, $user) {
 
         return true;
     }
 
+    /**
+     * loginUsingId method.
+     * @async
+     * @param {*} $id
+     * @param {*} $remember
+     * @returns {any}
+     */
     async loginUsingId($id, $remember = false) {
         let $user = await this.$provider.retrieveById($id)
         if (!is_null($user)) {
@@ -205,6 +318,13 @@ class SessionGuard extends GuardHelpers {
         return false;
     }
 
+    /**
+     * login method.
+     * @async
+     * @param {*} $user
+     * @param {*} $remember
+     * @returns {any}
+     */
     async login($user, $remember = false) {
         this.updateSession($user.getAuthIdentifier());
         if ($remember) {
@@ -216,6 +336,11 @@ class SessionGuard extends GuardHelpers {
         this.setUser($user);
     }
 
+    /**
+     * updateSession method.
+     * @param {*} $id
+     * @returns {any}
+     */
     updateSession($id) {
         if (this.$session instanceof Session) {
             this.$session.put(this.getName(), $id);
@@ -223,22 +348,43 @@ class SessionGuard extends GuardHelpers {
 
     }
 
+    /**
+     * ensureRememberTokenIsSet method.
+     * @async
+     * @param {*} $user
+     * @returns {any}
+     */
     async ensureRememberTokenIsSet($user) {
         if (empty($user.getRememberToken())) {
             await this.cycleRememberToken($user);
         }
     }
 
+    /**
+     * queueRecallerCookie method.
+     * @param {*} $user
+     * @returns {any}
+     */
     queueRecallerCookie($user) {
         this.createRecaller(
             $user.getAuthIdentifier() + '|' + $user.getRememberToken() + '|' + $user.getAuthPassword()
         );
     }
 
+    /**
+     * createRecaller method.
+     * @param {*} $value
+     * @returns {any}
+     */
     createRecaller($value) {
         return this.getCookieJar().forever(this.getRecallerName(), $value);
     }
 
+    /**
+     * logout method.
+     * @async
+     * @returns {any}
+     */
     async logout() {
         let $user = await this.user();
 
@@ -254,6 +400,11 @@ class SessionGuard extends GuardHelpers {
         return true
     }
 
+    /**
+     * logoutCurrentDevice method.
+     * @async
+     * @returns {any}
+     */
     async logoutCurrentDevice() {
         let $user = await this.user();
 
@@ -264,11 +415,20 @@ class SessionGuard extends GuardHelpers {
         this.$loggedOut = true;
     }
 
+    /**
+     * clearUserDataFromStorage method.
+     * @returns {any}
+     */
     clearUserDataFromStorage() {
         this.$session.remove(this.getName());
 
     }
 
+    /**
+     * cycleRememberToken method.
+     * @param {*} $user
+     * @returns {any}
+     */
     cycleRememberToken($user) {
         let $token = uid(50)
         $user.setRememberToken($token);
@@ -276,6 +436,13 @@ class SessionGuard extends GuardHelpers {
         return this.$provider.updateRememberToken($user, $token);
     }
 
+    /**
+     * logoutOtherDevices method.
+     * @async
+     * @param {*} $password
+     * @param {*} $attribute
+     * @returns {any}
+     */
     async logoutOtherDevices($password, $attribute = 'password') {
         if (!await this.user()) {
             return;
@@ -290,6 +457,13 @@ class SessionGuard extends GuardHelpers {
         return $result;
     }
 
+    /**
+     * rehashUserPassword method.
+     * @async
+     * @param {*} $password
+     * @param {*} $attribute
+     * @returns {any}
+     */
     async rehashUserPassword($password, $attribute) {
         let $user = await this.user();
         if (!Hash.check($password, $user[$attribute])) {
@@ -301,22 +475,42 @@ class SessionGuard extends GuardHelpers {
         }), ($u) => $u.save());
     }
 
+    /**
+     * getLastAttempted method.
+     * @returns {any}
+     */
     getLastAttempted() {
         return this.$lastAttempted;
     }
 
+    /**
+     * getName method.
+     * @returns {any}
+     */
     getName() {
         return 'login_' + this.$guardName.toLowerCase()
     }
 
+    /**
+     * getRecallerName method.
+     * @returns {any}
+     */
     getRecallerName() {
         return 'remember_' + this.$guardName.toLowerCase()
     }
 
+    /**
+     * viaRemember method.
+     * @returns {any}
+     */
     viaRemember() {
         return this.$viaRemember;
     }
 
+    /**
+     * getCookieJar method.
+     * @returns {any}
+     */
     getCookieJar() {
         if (!isset(this.$cookie)) {
             throw new Error('Cookie jar has not been set.');
@@ -325,18 +519,36 @@ class SessionGuard extends GuardHelpers {
         return this.$cookie;
     }
 
+    /**
+     * setCookieJar method.
+     * @param {*} $cookie
+     * @returns {any}
+     */
     setCookieJar($cookie) {
         this.$cookie = $cookie;
     }
 
+    /**
+     * getSession method.
+     * @returns {any}
+     */
     getSession() {
         return this.$session;
     }
 
+    /**
+     * getUser method.
+     * @returns {any}
+     */
     getUser() {
         return this.$user;
     }
 
+    /**
+     * setUser method.
+     * @param {*} $user
+     * @returns {any}
+     */
     setUser($user) {
         this.$user = $user;
 
@@ -345,10 +557,19 @@ class SessionGuard extends GuardHelpers {
         return this;
     }
 
+    /**
+     * getRequest method.
+     * @returns {any}
+     */
     getRequest() {
         return this.$request;
     }
 
+    /**
+     * setRequest method.
+     * @param {*} $request
+     * @returns {any}
+     */
     setRequest($request) {
         this.$request = $request;
 

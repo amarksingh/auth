@@ -1,8 +1,24 @@
+/**
+ * Class RedirectIfAuthenticated.
+ */
 class RedirectIfAuthenticated {
+    /**
+     * Create a new instance.
+     * @param {*} $guards
+     */
     constructor(...$guards) {
         this.$guards = $guards;
     }
 
+    /**
+     * handle method.
+     * @async
+     * @param {*} { request
+     * @param {*} next
+     * @param {*} auth
+     * @param {*} redirect }
+     * @returns {any}
+     */
     async handle({ request, next, auth, redirect }) {
         let $guards = empty(this.$guards) ? [null] : this.$guards;
 
@@ -15,6 +31,11 @@ class RedirectIfAuthenticated {
         return next();
     }
 
+    /**
+     * redirectTo method.
+     * @param {*} $request
+     * @returns {any}
+     */
     redirectTo($request) {
         return '/';
     }

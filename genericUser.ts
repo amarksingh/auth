@@ -1,52 +1,108 @@
 const GenericUserInterface = require('@ostro/contracts/auth/genericUser')
+/**
+ * Class GenericUser.
+ */
 class GenericUser extends GenericUserInterface {
 
+    /**
+     * Create a new instance.
+     * @param {*} $attributes
+     */
     constructor($attributes) {
         super()
         this.$attributes = $attributes;
     }
 
+    /**
+     * getAuthIdentifierName method.
+     * @returns {any}
+     */
     getAuthIdentifierName() {
         return 'id';
     }
 
+    /**
+     * getAuthIdentifier method.
+     * @returns {any}
+     */
     getAuthIdentifier() {
         return this.$attributes[this.getAuthIdentifierName()];
     }
 
+    /**
+     * getAuthPassword method.
+     * @returns {any}
+     */
     getAuthPassword() {
         return this.$attributes['password'];
     }
 
+    /**
+     * getRememberToken method.
+     * @returns {any}
+     */
     getRememberToken() {
         return this.$attributes[this.getRememberTokenName()];
     }
 
+    /**
+     * setRememberToken method.
+     * @param {*} $value
+     * @returns {any}
+     */
     setRememberToken($value) {
         this.$attributes[this.getRememberTokenName()] = $value;
     }
 
+    /**
+     * getRememberTokenName method.
+     * @returns {any}
+     */
     getRememberTokenName() {
         return 'remember_token';
     }
 
+    /**
+     * setApiToken method.
+     * @param {*} $value
+     * @returns {any}
+     */
     setApiToken($value) {
         this.$attributes[this.getApiTokenName()] = $value;
     }
 
+    /**
+     * getApiTokenName method.
+     * @returns {any}
+     */
     getApiTokenName() {
         return 'api_token';
     }
 
+    /**
+     * toJSON method.
+     * @returns {any}
+     */
     toJSON() {
         return this.$attributes
     }
 
 
+    /**
+     * __get method.
+     * @param {*} $key
+     * @returns {any}
+     */
     __get($key) {
         return this.$attributes[$key];
     }
 
+    /**
+     * __set method.
+     * @param {*} $key
+     * @param {*} $value
+     * @returns {any}
+     */
     __set($key, $value) {
         this.$attributes[$key] = $value;
     }

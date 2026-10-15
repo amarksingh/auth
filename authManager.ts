@@ -6,10 +6,17 @@ const SessionGuard = require('./sessionGuard')
 const TokenGuard = require('./tokenGuard')
 const AuthRequest = require('./authRequest')
 
+/**
+ * Class AuthManager.
+ */
 class AuthManager extends implement(Manager, CreatesUserProvider) {
 
     $type = 'auth';
 
+    /**
+     * Create a new instance.
+     * @param {*} $app
+     */
     constructor($app) {
         super($app)
         Object.defineProperties(this, {
@@ -22,10 +29,20 @@ class AuthManager extends implement(Manager, CreatesUserProvider) {
         })
     }
 
+    /**
+     * guard method.
+     * @param {*} $name
+     * @returns {any}
+     */
     guard($name = null) {
         return this.driver($name)
     }
 
+    /**
+     * resolve method.
+     * @param {*} $name
+     * @returns {any}
+     */
     resolve($name) {
         let $config = this.getConfig($name);
         if (!$config) {
@@ -34,6 +51,10 @@ class AuthManager extends implement(Manager, CreatesUserProvider) {
         return super.resolve($name, $config)
     }
 
+    /**
+     * start method.
+     * @returns {any}
+     */
     start() {
         return (request, response, next) => {
             request.auth = new AuthRequest(request, this)
@@ -44,6 +65,12 @@ class AuthManager extends implement(Manager, CreatesUserProvider) {
         }
     }
 
+    /**
+     * createSessionDriver method.
+     * @param {*} $config
+     * @param {*} $name
+     * @returns {any}
+     */
     createSessionDriver($config, $name) {
         let $provider = this.createUserProvider($config['provider'] || null);
 
@@ -54,6 +81,12 @@ class AuthManager extends implement(Manager, CreatesUserProvider) {
 
     }
 
+    /**
+     * createTokenDriver method.
+     * @param {*} $config
+     * @param {*} $name
+     * @returns {any}
+     */
     createTokenDriver($config, $name) {
 
         let $provider = this.createUserProvider($config['provider'] || null)
@@ -69,32 +102,64 @@ class AuthManager extends implement(Manager, CreatesUserProvider) {
 
     }
 
+    /**
+     * getConfig method.
+     * @param {*} name
+     * @returns {any}
+     */
     getConfig(name) {
         return super.getConfig(`guards.${name}`);
     }
 
+    /**
+     * getDefaultDriver method.
+     * @returns {any}
+     */
     getDefaultDriver() {
         return super.getConfig(`defaults.guard`);
     }
 
+    /**
+     * userResolver method.
+     * @returns {any}
+     */
     userResolver() {
         return this.$userResolver;
     }
 
+    /**
+     * resolveUsersUsing method.
+     * @param {*} $userResolver
+     * @returns {any}
+     */
     resolveUsersUsing($userResolver) {
         this.$userResolver = $userResolver;
         return this;
     }
 
+    /**
+     * provider method.
+     * @param {*} $name
+     * @param {*} $callback
+     * @returns {any}
+     */
     provider($name, $callback) {
         this.$customProviderCreators[$name] = $callback;
         return this;
     }
 
+    /**
+     * hasResolvedGuards method.
+     * @returns {any}
+     */
     hasResolvedGuards() {
         return count(this.$drivers) > 0;
     }
 
+    /**
+     * forgetGuards method.
+     * @returns {any}
+     */
     forgetGuards() {
         return this.forgetDrivers()
     }
