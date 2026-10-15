@@ -2,7 +2,7 @@
   "name": "@ostro/auth",
   "version": "1.0.1",
   "description": "Authentication module for OstroJS",
-  "main": "authManager.js",
+  "main": "authManager.ts",
   "scripts": {
     "test": "npx c8 npx jest"
   },
