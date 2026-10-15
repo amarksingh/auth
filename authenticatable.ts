@@ -1,11 +1,13 @@
+import type { IAuthenticatable } from '@ostro/contracts/auth/authenticatable';
+
 /**
  * Class Authenticatable.
  */
-class Authenticatable {
+class Authenticatable implements IAuthenticatable {
 
-    $rememberTokenName = 'remember_token';
+    $rememberTokenName: string = 'remember_token';
     
-    $apiTokenName = 'api_token';
+    $apiTokenName: string = 'api_token';
 
     /**
      * getAuthIdentifierName method.

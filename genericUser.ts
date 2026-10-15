@@ -1,15 +1,19 @@
-const GenericUserInterface = require('@ostro/contracts/auth/genericUser')
+import type { IGenericUser } from '@ostro/contracts/auth/genericUser';
+
+const GenericUserInterface = require('@ostro/contracts/auth/genericUser');
+
 /**
  * Class GenericUser.
  */
-class GenericUser extends GenericUserInterface {
+class GenericUser extends GenericUserInterface implements IGenericUser {
+    $attributes: Record<string, any>;
 
     /**
      * Create a new instance.
-     * @param {*} $attributes
+     * @param {Record<string, any>} $attributes
      */
     constructor($attributes: Record<string, any>) {
-        super()
+        super();
         this.$attributes = $attributes;
     }
 
