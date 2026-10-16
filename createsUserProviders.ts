@@ -1,7 +1,7 @@
-import InvalidArgumentException = require('@ostro/support/exceptions/invalidArgumentException');
+import InvalidArgumentException from '@ostro/support/exceptions/invalidArgumentException';
 import { is_null, isset, call_user_func } from '@ostro/support/function';
-import DatabaseUserProvider = require('./databaseUserProvider');
-import EloquentUserProvider = require('./eloquentUserProvider');
+import DatabaseUserProvider from './databaseUserProvider';
+import EloquentUserProvider from './eloquentUserProvider';
 
 /**
  * Class CreatesUserProviders.
@@ -89,4 +89,4 @@ class CreatesUserProviders {
     }
 }
 
-export = CreatesUserProviders;
+export default CreatesUserProviders;

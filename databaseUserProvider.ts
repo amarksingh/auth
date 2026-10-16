@@ -1,4 +1,4 @@
-import GenericUser = require('./genericUser');
+import GenericUser from './genericUser';
 import { hash_equals, empty, count, is_null } from '@ostro/support/function';
 
 /**
@@ -139,4 +139,4 @@ class DatabaseUserProvider {
     }
 }
 
-export = DatabaseUserProvider;
+export default DatabaseUserProvider;

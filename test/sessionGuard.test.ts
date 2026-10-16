@@ -1,5 +1,7 @@
-require('@ostro/support/helpers');
-const SessionGuard = require('../sessionGuard');
+import '@ostro/support/helpers';
+import SessionGuard from '../sessionGuard';
+import Session from '@ostro/contracts/session/session';
+import Hash from '@ostro/support/facades/hash';
 
 describe('SessionGuard Multi-Scenario Coverage Tests', () => {
     let mockProvider;
@@ -35,7 +37,7 @@ describe('SessionGuard Multi-Scenario Coverage Tests', () => {
             getPassword: jest.fn()
         };
 
-        Object.setPrototypeOf(mockSession, require('@ostro/contracts/session/session').prototype);
+        Object.setPrototypeOf(mockSession, Session.prototype);
     });
 
     test('getters & setters: getSession, getUser, getRequest, setRequest, setCookieJar', () => {
@@ -264,7 +266,6 @@ describe('SessionGuard Multi-Scenario Coverage Tests', () => {
             make: jest.fn().mockReturnValue('new_hashed_password')
         };
 
-        const Hash = require('@ostro/support/facades/hash');
         Hash.setFacadeApplication({ instance: jest.fn() });
         Hash.swap(mockHashInstance);
 

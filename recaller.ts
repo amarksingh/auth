@@ -72,4 +72,4 @@ class Recaller {
     }
 }
 
-export = Recaller;
+export default Recaller;

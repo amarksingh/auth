@@ -1,7 +1,8 @@
-require('@ostro/support/helpers');
-const AuthManager = require('../authManager');
-const AuthRequest = require('../authRequest');
-const AuthServiceProvider = require('../authServiceProvider');
+import '@ostro/support/helpers';
+import AuthManager from '../authManager';
+import AuthRequest from '../authRequest';
+import AuthServiceProvider from '../authServiceProvider';
+import InvalidArgumentException from '@ostro/support/exceptions/invalidArgumentException';
 
 describe('AuthManager & AuthRequest Unit Tests', () => {
     let mockApp;
@@ -123,7 +124,6 @@ describe('AuthManager & AuthRequest Unit Tests', () => {
     });
 
     test('createUserProvider throws InvalidArgumentException for unknown driver or missing driver', () => {
-        const InvalidArgumentException = require('@ostro/support/exceptions/invalidArgumentException');
         const manager = new AuthManager(mockApp);
         mockApp.make('config').auth.providers.unknown = { driver: 'unknown_driver' };
         mockApp.make('config').auth.providers.no_driver = { table: 'users' };

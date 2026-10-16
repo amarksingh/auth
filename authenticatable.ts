@@ -108,4 +108,4 @@ class Authenticatable implements IAuthenticatable {
     }
 }
 
-export = Authenticatable;
+export default Authenticatable;

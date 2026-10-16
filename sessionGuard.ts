@@ -1,9 +1,9 @@
-import GuardHelpers = require('./guardHelpers');
-import uidSafe = require('uid-safe');
-import Recaller = require('./recaller');
-import Session = require('@ostro/contracts/session/session');
-import Hash = require('@ostro/support/facades/hash');
-import InvalidArgumentException = require('@ostro/support/exceptions/invalidArgumentException');
+import GuardHelpers from './guardHelpers';
+import uidSafe from 'uid-safe';
+import Recaller from './recaller';
+import Session from '@ostro/contracts/session/session';
+import Hash from '@ostro/support/facades/hash';
+import InvalidArgumentException from '@ostro/support/exceptions/invalidArgumentException';
 import { is_null, empty, isset, tap } from '@ostro/support/function';
 
 const uid = uidSafe.sync;
@@ -591,4 +591,4 @@ class SessionGuard extends GuardHelpers {
     }
 }
 
-export = SessionGuard;
+export default SessionGuard;

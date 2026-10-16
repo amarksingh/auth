@@ -21,5 +21,19 @@ module.exports = {
     "testMatch": [
         "**/test/**/*.test.ts",
         "**/test/**/*.test.js"
+    ],
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+        "text",
+        "lcov",
+        "clover"
+    ],
+    "collectCoverageFrom": [
+        "<rootDir>/**/*.ts",
+        "!<rootDir>/node_modules/**",
+        "!<rootDir>/test/**",
+        "!<rootDir>/coverage/**",
+        "!<rootDir>/jest.config.js"
     ]
 };

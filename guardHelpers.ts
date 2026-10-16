@@ -1,4 +1,4 @@
-import AuthenticationException = require('./authenticationException');
+import AuthenticationException from './authenticationException';
 import { is_null } from '@ostro/support/function';
 
 /**
@@ -99,4 +99,4 @@ abstract class GuardHelpers {
     }
 }
 
-export = GuardHelpers;
+export default GuardHelpers;

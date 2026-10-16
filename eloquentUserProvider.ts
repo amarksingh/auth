@@ -184,4 +184,4 @@ class EloquentUserProvider {
     }
 }
 
-export = EloquentUserProvider;
+export default EloquentUserProvider;

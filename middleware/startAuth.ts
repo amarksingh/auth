@@ -1,4 +1,4 @@
-import AuthManager = require('../authManager');
+import AuthManager from '../authManager';
 
 /**
  * Class StartAuth.
@@ -44,4 +44,4 @@ class StartAuth {
     }
 }
 
-export = StartAuth;
+export default StartAuth;

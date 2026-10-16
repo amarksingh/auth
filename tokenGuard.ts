@@ -1,4 +1,4 @@
-import GuardHelpers = require('./guardHelpers');
+import GuardHelpers from './guardHelpers';
 import { createHash } from 'crypto';
 import { is_null, empty } from '@ostro/support/function';
 
@@ -135,4 +135,4 @@ class TokenGuard extends GuardHelpers {
     }
 }
 
-export = TokenGuard;
+export default TokenGuard;

@@ -83,4 +83,4 @@ class Auth extends Macroable {
     }
 }
 
-export = Auth;
+export default Auth;

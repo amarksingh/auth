@@ -1,4 +1,4 @@
-import AuthenticationException = require('../authenticationException');
+import AuthenticationException from '../authenticationException';
 import { empty } from '@ostro/support/function';
 
 /**
@@ -73,4 +73,4 @@ class Authenticate {
     }
 }
 
-export = Authenticate;
+export default Authenticate;

@@ -1,10 +1,10 @@
 import '@ostro/support/helpers';
-import Manager = require('@ostro/support/manager');
-import InvalidArgumentException = require('@ostro/support/exceptions/invalidArgumentException');
-import CreatesUserProviders = require('./createsUserProviders');
-import SessionGuard = require('./sessionGuard');
-import TokenGuard = require('./tokenGuard');
-import AuthRequest = require('./authRequest');
+import Manager from '@ostro/support/manager';
+import InvalidArgumentException from '@ostro/support/exceptions/invalidArgumentException';
+import CreatesUserProviders from './createsUserProviders';
+import SessionGuard from './sessionGuard';
+import TokenGuard from './tokenGuard';
+import AuthRequest from './authRequest';
 import { implement, count } from '@ostro/support/function';
 
 /**
@@ -178,4 +178,4 @@ class AuthManager extends (implement(Manager, CreatesUserProviders) as any) {
     }
 }
 
-export = AuthManager;
+export default AuthManager;

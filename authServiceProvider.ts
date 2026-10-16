@@ -1,5 +1,5 @@
-import ServiceProvider = require('@ostro/support/serviceProvider');
-import AuthManager = require('./authManager');
+import ServiceProvider from '@ostro/support/serviceProvider';
+import AuthManager from './authManager';
 import { call_user_func } from '@ostro/support/function';
 
 /**
@@ -54,4 +54,4 @@ class AuthServiceProvider extends ServiceProvider {
     }
 }
 
-export = AuthServiceProvider;
+export default AuthServiceProvider;

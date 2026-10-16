@@ -54,4 +54,4 @@ class RedirectIfAuthenticated {
     }
 }
 
-export = RedirectIfAuthenticated;
+export default RedirectIfAuthenticated;

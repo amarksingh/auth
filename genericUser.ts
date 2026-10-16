@@ -119,4 +119,4 @@ class GenericUser implements IGenericUser {
     }
 }
 
-export = GenericUser;
+export default GenericUser;

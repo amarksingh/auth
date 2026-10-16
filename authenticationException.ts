@@ -45,4 +45,4 @@ class AuthenticationException extends Error {
     }
 }
 
-export = AuthenticationException;
+export default AuthenticationException;
