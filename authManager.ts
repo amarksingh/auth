@@ -1,96 +1,103 @@
-require('@ostro/support/helpers')
-const Manager = require('@ostro/support/manager')
-const InvalidArgumentException = require('@ostro/support/exceptions/invalidArgumentException')
-const CreatesUserProvider = require('./createsUserProviders')
-const SessionGuard = require('./sessionGuard')
-const TokenGuard = require('./tokenGuard')
-const AuthRequest = require('./authRequest')
+import '@ostro/support/helpers';
+import Manager = require('@ostro/support/manager');
+import InvalidArgumentException = require('@ostro/support/exceptions/invalidArgumentException');
+import CreatesUserProviders = require('./createsUserProviders');
+import SessionGuard = require('./sessionGuard');
+import TokenGuard = require('./tokenGuard');
+import AuthRequest = require('./authRequest');
+import { implement, count } from '@ostro/support/function';
 
 /**
  * Class AuthManager.
  */
-class AuthManager extends implement(Manager, CreatesUserProvider) {
-
-    $type = 'auth';
+class AuthManager extends (implement(Manager, CreatesUserProviders) as any) {
+    public $type: string = 'auth';
+    public $userResolver: any;
+    declare public $drivers: Record<string, any>;
+    declare public $customProviderCreators: Record<string, any>;
+    declare public createUserProvider: (provider?: any) => any;
 
     /**
-     * Create a new instance.
-     * @param {*} $app
+     * Create a new AuthManager instance.
+     *
+     * @param $app - Application container instance
      */
     constructor($app: any) {
-        super($app)
+        super($app);
         Object.defineProperties(this, {
             $userResolver: {
-                value: function($guard = null) {
+                value: function (this: any, $guard: any = null) {
                     return this.guard($guard).user();
                 },
-                writable: true
-            }
-        })
+                writable: true,
+            },
+        });
     }
 
     /**
-     * guard method.
-     * @param {*} $name
-     * @returns {any}
+     * Attempt to get the guard from the local cache.
+     *
+     * @param $name - Guard name
+     * @returns Guard instance
      */
-    guard($name: any = null) {
-        return this.driver($name)
+    public guard($name: any = null): any {
+        return this.driver($name);
     }
 
     /**
-     * resolve method.
-     * @param {*} $name
-     * @returns {any}
+     * Resolve the given guard by name.
+     *
+     * @param $name - Guard name
+     * @returns Guard driver instance
      */
-    resolve($name: string) {
-        let $config = this.getConfig($name);
+    public resolve($name: string): any {
+        const $config = this.getConfig($name);
         if (!$config) {
             throw new InvalidArgumentException(`Auth guard [${$name}] is not defined.`);
         }
-        return super.resolve($name, $config)
+        return super.resolve($name, $config);
     }
 
     /**
-     * start method.
-     * @returns {any}
+     * Middleware to initiate auth on each request.
+     *
+     * @returns Middleware function
      */
-    start() {
-        return (request, response, next) => {
-            request.auth = new AuthRequest(request, this)
-            request.user = function($guard) {
-                return this.auth.guard($guard).user()
-            }
-            next()
-        }
+    public start(): (request: any, response: any, next: (err?: any) => any) => void {
+        return (request: any, response: any, next: (err?: any) => any) => {
+            request.auth = new AuthRequest(request, this);
+            request.user = function (this: any, $guard: any) {
+                return this.auth.guard($guard).user();
+            };
+            next();
+        };
     }
 
     /**
-     * createSessionDriver method.
-     * @param {*} $config
-     * @param {*} $name
-     * @returns {any}
+     * Create an instance of the session guard driver.
+     *
+     * @param $config - Driver configuration
+     * @param $name - Guard name
+     * @returns Factory function creating SessionGuard
      */
-    createSessionDriver($config: Record<string, any>, $name: string) {
-        let $provider = this.createUserProvider($config['provider'] || null);
+    public createSessionDriver($config: Record<string, any>, $name: string): (request: any) => SessionGuard {
+        const $provider = this.createUserProvider($config['provider'] || null);
 
-        return ($request) => {
-
+        return ($request: any) => {
             return new SessionGuard($name, $provider, $request);
-        }
-
+        };
     }
 
     /**
-     * createTokenDriver method.
-     * @param {*} $config
-     * @param {*} $name
-     * @returns {any}
+     * Create an instance of the token guard driver.
+     *
+     * @param $config - Driver configuration
+     * @param $name - Guard name
+     * @returns Factory function creating TokenGuard
      */
-    createTokenDriver($config: Record<string, any>, $name: string) {
-
-        let $provider = this.createUserProvider($config['provider'] || null)
-        return ($request) => {
+    public createTokenDriver($config: Record<string, any>, $name: string): (request: any) => TokenGuard {
+        const $provider = this.createUserProvider($config['provider'] || null);
+        return ($request: any) => {
             return new TokenGuard(
                 $provider,
                 $request,
@@ -98,72 +105,77 @@ class AuthManager extends implement(Manager, CreatesUserProvider) {
                 $config['storage_key'] || 'api_token',
                 $config['hash'] || false
             );
-        }
-
+        };
     }
 
     /**
-     * getConfig method.
-     * @param {*} name
-     * @returns {any}
+     * Get the guard configuration.
+     *
+     * @param name - Guard name
+     * @returns Configuration object
      */
-    getConfig(name: string) {
+    public getConfig(name: string): any {
         return super.getConfig(`guards.${name}`);
     }
 
     /**
-     * getDefaultDriver method.
-     * @returns {any}
+     * Get the default authentication driver name.
+     *
+     * @returns Default driver name
      */
-    getDefaultDriver() {
+    public getDefaultDriver(): string {
         return super.getConfig(`defaults.guard`);
     }
 
     /**
-     * userResolver method.
-     * @returns {any}
+     * Get the default user resolver callback.
+     *
+     * @returns User resolver function
      */
-    userResolver() {
+    public userResolver(): any {
         return this.$userResolver;
     }
 
     /**
-     * resolveUsersUsing method.
-     * @param {*} $userResolver
-     * @returns {any}
+     * Set the callback to be used to resolve users.
+     *
+     * @param $userResolver - User resolver function
+     * @returns Current instance
      */
-    resolveUsersUsing($userResolver: Function) {
+    public resolveUsersUsing($userResolver: Function): this {
         this.$userResolver = $userResolver;
         return this;
     }
 
     /**
-     * provider method.
-     * @param {*} $name
-     * @param {*} $callback
-     * @returns {any}
+     * Register a custom provider creator Closure.
+     *
+     * @param $name - Provider name
+     * @param $callback - Provider factory closure
+     * @returns Current instance
      */
-    provider($name: string, $callback: Function) {
+    public provider($name: string, $callback: Function): this {
         this.$customProviderCreators[$name] = $callback;
         return this;
     }
 
     /**
-     * hasResolvedGuards method.
-     * @returns {any}
+     * Determine if any guards have been resolved.
+     *
+     * @returns True if guards are resolved
      */
-    hasResolvedGuards() {
+    public hasResolvedGuards(): boolean {
         return count(this.$drivers) > 0;
     }
 
     /**
-     * forgetGuards method.
-     * @returns {any}
+     * Forget all of the resolved guard instances.
+     *
+     * @returns Current instance
      */
-    forgetGuards() {
-        return this.forgetDrivers()
+    public forgetGuards(): this {
+        return this.forgetDrivers();
     }
-
 }
 
-module.exports = AuthManager
+export = AuthManager;

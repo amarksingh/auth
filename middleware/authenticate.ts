@@ -1,42 +1,47 @@
-const AuthenticationException = require('../authenticationException')
+import AuthenticationException = require('../authenticationException');
+import { empty } from '@ostro/support/function';
+
 /**
  * Class Authenticate.
  */
-class Authenticate {        
+class Authenticate {
+    public $guards: (string | null)[];
+
     /**
-     * Create a new instance.
-     * @param {*} guards
+     * Create a new Authenticate middleware instance.
+     *
+     * @param guards - List of guards to check
      */
     constructor(...guards: any[]) {
         this.$guards = guards;
     }
+
     /**
-     * handle method.
-     * @async
-     * @param {*} { request
-     * @param {*} next }
-     * @returns {any}
+     * Handle an incoming request.
+     *
+     * @param context - Request context containing request and next
+     * @returns Next middleware result
      */
-    async handle({ request, next }: Record<string, any>) {
-        await this.authenticate(request,this.$guards);
+    public async handle({ request, next }: { request: any; next: () => any }): Promise<any> {
+        await this.authenticate(request, this.$guards);
         return next();
     }
 
     /**
-     * authenticate method.
-     * @async
-     * @param {*} $request
-     * @param {*} $guards
-     * @returns {any}
+     * Determine if the request user is authenticated by checking guards.
+     *
+     * @param $request - Request instance
+     * @param $guards - Array of guards
+     * @returns Authenticated user
      */
-    async authenticate($request: any, $guards: any[]) {
+    public async authenticate($request: any, $guards: any[]): Promise<any> {
         if (empty($guards)) {
             $guards = [null];
         }
 
-        for (let $guard of $guards) {
+        for (const $guard of $guards) {
             if (await $request.auth.guard($guard).check()) {
-                return await $request.auth.shouldUse($guard)
+                return await $request.auth.shouldUse($guard);
             }
         }
 
@@ -44,25 +49,28 @@ class Authenticate {
     }
 
     /**
-     * unauthenticated method.
-     * @param {*} $request
-     * @param {*} $guards
-     * @returns {any}
+     * Handle unauthenticated user attempt.
+     *
+     * @param $request - Request instance
+     * @param $guards - Array of guards that were checked
      */
-    unauthenticated($request: any, $guards: any[]) {
+    public unauthenticated($request: any, $guards: any[]): never {
         throw new AuthenticationException(
-            'Unauthenticated.', $guards, this.redirectTo($request)
+            'Unauthenticated.',
+            $guards,
+            this.redirectTo($request)
         );
     }
 
     /**
-     * redirectTo method.
-     * @param {*} $request
-     * @returns {any}
+     * Get the redirection path for unauthenticated users.
+     *
+     * @param $request - Request instance
+     * @returns Redirect path or undefined
      */
-    redirectTo($request: any) {
+    public redirectTo($request: any): any {
         //
     }
 }
 
-module.exports = Authenticate
+export = Authenticate;

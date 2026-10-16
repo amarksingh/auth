@@ -1,34 +1,47 @@
+import AuthManager = require('../authManager');
+
 /**
  * Class StartAuth.
  */
 class StartAuth {
+    declare public $app: any;
+    public $auth: any;
+    public $registered: boolean = false;
+    public $startAuth: any;
+
     /**
-     * Create a new instance.
+     * Create a new StartAuth middleware instance.
      */
     constructor() {
-        this.$auth = this.$app['auth'];
+        this.$auth = this.$app?.['auth'];
 
-        if (this.$auth instanceof require('../authManager')) {
-
+        if (this.$auth instanceof AuthManager) {
             this.$registered = true;
             this.$startAuth = this.$auth.start();
         }
     }
 
     /**
-     * handle method.
-     * @param {*} {request
-     * @param {*} response
-     * @param {*} next}
-     * @returns {any}
+     * Handle an incoming request.
+     *
+     * @param context - Request context containing request, response, and next
+     * @returns Next result or executed startAuth handler
      */
-    handle({request, response, next}: Record<string, any>) {
-    	if(!this.$registered){
-            return next()
+    public handle({
+        request,
+        response,
+        next,
+    }: {
+        request: any;
+        response: any;
+        next: (err?: any) => any;
+    }): any {
+        if (!this.$registered) {
+            return next();
         }
 
-        this.$startAuth(request, response, next)
+        return this.$startAuth(request, response, next);
     }
 }
 
-module.exports = StartAuth
+export = StartAuth;

@@ -1,8 +1,8 @@
-require('@ostro/support/helpers');
-const Authenticatable = require('../authenticatable');
-const AuthenticationException = require('../authenticationException');
-const GenericUser = require('../genericUser');
-const Recaller = require('../recaller');
+import '@ostro/support/helpers';
+import Authenticatable from '../authenticatable';
+import AuthenticationException from '../authenticationException';
+import GenericUser from '../genericUser';
+import Recaller from '../recaller';
 
 describe('Authenticatable Trait/Class', () => {
     class User extends Authenticatable {

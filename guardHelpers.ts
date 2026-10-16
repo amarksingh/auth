@@ -1,88 +1,102 @@
-const AuthenticationException = require('./authenticationException');
+import AuthenticationException = require('./authenticationException');
+import { is_null } from '@ostro/support/function';
 
 /**
  * Class GuardHelpers.
  */
-class GuardHelpers {
+abstract class GuardHelpers {
+    public $user: any = null;
+
+    public $provider: any;
 
     /**
-     * authenticate method.
-     * @async
-     * @returns {any}
+     * Get the currently authenticated user.
      */
-    async authenticate() {
-        let $user = await this.user()
+    abstract user(): Promise<any>;
+
+    /**
+     * Determine if the current user is authenticated. If not, throw an exception.
+     *
+     * @returns The authenticated user
+     * @throws AuthenticationException
+     */
+    public async authenticate(): Promise<any> {
+        const $user = await this.user();
         if (!is_null($user)) {
             return $user;
         }
 
-        throw new AuthenticationException;
+        throw new AuthenticationException();
     }
 
     /**
-     * hasUser method.
-     * @returns {any}
+     * Determine if the guard has a user instance.
+     *
+     * @returns True if a user is set
      */
-    hasUser() {
+    public hasUser(): boolean {
         return !is_null(this.$user);
     }
 
     /**
-     * check method.
-     * @async
-     * @returns {any}
+     * Determine if the current user is authenticated.
+     *
+     * @returns True if user is authenticated
      */
-    async check() {
+    public async check(): Promise<boolean> {
         return !is_null(await this.user());
     }
 
     /**
-     * guest method.
-     * @async
-     * @returns {any}
+     * Determine if the current user is a guest.
+     *
+     * @returns True if user is not authenticated
      */
-    async guest() {
-        return !await this.check();
+    public async guest(): Promise<boolean> {
+        return !(await this.check());
     }
 
     /**
-     * id method.
-     * @async
-     * @returns {any}
+     * Get the ID for the currently authenticated user.
+     *
+     * @returns The user's auth identifier or undefined
      */
-    async id() {
-        if (await this.user()) {
-            return (await this.user()).getAuthIdentifier();
+    public async id(): Promise<any> {
+        const user = await this.user();
+        if (user) {
+            return user.getAuthIdentifier();
         }
     }
 
     /**
-     * setUser method.
-     * @param {*} $user
-     * @returns {any}
+     * Set the current user.
+     *
+     * @param $user - User instance or null
+     * @returns Current guard instance
      */
-    setUser($user: Record<string, any>) {
+    public setUser($user: any): this {
         this.$user = $user;
 
         return this;
     }
 
     /**
-     * getProvider method.
-     * @returns {any}
+     * Get the user provider used by the guard.
+     *
+     * @returns The user provider instance
      */
-    getProvider() {
+    public getProvider(): any {
         return this.$provider;
     }
 
     /**
-     * setProvider method.
-     * @param {*} $provider
-     * @returns {any}
+     * Set the user provider used by the guard.
+     *
+     * @param $provider - User provider instance
      */
-    setProvider($provider: any) {
+    public setProvider($provider: any): void {
         this.$provider = $provider;
     }
 }
 
-module.exports = GuardHelpers
+export = GuardHelpers;

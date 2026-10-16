@@ -1,29 +1,34 @@
-const InvalidArgumentException = require('@ostro/support/exceptions/invalidArgumentException')
-const DatabaseUserProvider = require('./databaseUserProvider')
-const EloquentUserProvider = require('./eloquentUserProvider')
+import InvalidArgumentException = require('@ostro/support/exceptions/invalidArgumentException');
+import { is_null, isset, call_user_func } from '@ostro/support/function';
+import DatabaseUserProvider = require('./databaseUserProvider');
+import EloquentUserProvider = require('./eloquentUserProvider');
 
 /**
  * Class CreatesUserProviders.
  */
 class CreatesUserProviders {
+    public $customProviderCreators: Record<string, any> = {};
 
-    $customProviderCreators = {};
+    declare public $container: any;
 
     /**
-     * createUserProvider method.
-     * @param {*} $provider
-     * @returns {any}
+     * Create the given user provider instance.
+     *
+     * @param $provider - Provider name
+     * @returns User provider instance or undefined
      */
-    createUserProvider($provider: any = null) {
-        let $config = this.getProviderConfiguration($provider)
+    public createUserProvider($provider: any = null): any {
+        const $config = this.getProviderConfiguration($provider);
         if (is_null($config)) {
             return;
         }
-        let $driver = ($config['driver'] || null)
+        const $driver = $config['driver'] || null;
 
         if (isset(this.$customProviderCreators[$driver])) {
             return call_user_func(
-                this.$customProviderCreators[$driver], this.$container, $config
+                this.$customProviderCreators[$driver],
+                this.$container,
+                $config
             );
         }
 
@@ -34,50 +39,54 @@ class CreatesUserProviders {
                 return this.createEloquentProvider($config);
             default:
                 throw new InvalidArgumentException(
-                    `Authentication user provider [{$driver}] is not defined.`
+                    `Authentication user provider [${$driver}] is not defined.`
                 );
         }
     }
 
     /**
-     * getProviderConfiguration method.
-     * @param {*} provider
-     * @returns {any}
+     * Get the user provider configuration.
+     *
+     * @param provider - Provider name
+     * @returns Provider configuration object or undefined
      */
-    getProviderConfiguration(provider: any) {
-        provider = provider || this.getDefaultUserProvider()
+    public getProviderConfiguration(provider: any): any {
+        provider = provider || this.getDefaultUserProvider();
         if (provider) {
             return this.$container.config.get(`auth.providers.${provider}`);
         }
     }
 
     /**
-     * createDatabaseProvider method.
-     * @param {*} $config
-     * @returns {any}
+     * Create an instance of the database user provider.
+     *
+     * @param $config - Provider configuration
+     * @returns Database user provider instance
      */
-    createDatabaseProvider($config: Record<string, any>) {
-        let $connection = this.$container['db'].connection($config['connection'] || null);
+    public createDatabaseProvider($config: Record<string, any>): DatabaseUserProvider {
+        const $connection = this.$container['db'].connection($config['connection'] || null);
 
         return new DatabaseUserProvider($connection, this.$container['hash'], $config['table']);
     }
 
     /**
-     * createEloquentProvider method.
-     * @param {*} $config
-     * @returns {any}
+     * Create an instance of the Eloquent user provider.
+     *
+     * @param $config - Provider configuration
+     * @returns Eloquent user provider instance
      */
-    createEloquentProvider($config: Record<string, any>) {
+    public createEloquentProvider($config: Record<string, any>): EloquentUserProvider {
         return new EloquentUserProvider(this.$container['hash'], $config['model']);
     }
 
     /**
-     * getDefaultUserProvider method.
-     * @returns {any}
+     * Get the default user provider name.
+     *
+     * @returns Default provider name
      */
-    getDefaultUserProvider() {
+    public getDefaultUserProvider(): string | undefined {
         return this.$container.config.get('auth.defaults.provider');
     }
 }
 
-module.exports = CreatesUserProviders
+export = CreatesUserProviders;

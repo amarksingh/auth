@@ -1,61 +1,57 @@
-const ServiceProvider = require('@ostro/support/serviceProvider')
-const AuthManager = require('./authManager')
+import ServiceProvider = require('@ostro/support/serviceProvider');
+import AuthManager = require('./authManager');
+import { call_user_func } from '@ostro/support/function';
+
 /**
  * Class AuthServiceProvider.
  */
 class AuthServiceProvider extends ServiceProvider {
+    declare public $app: any;
 
     /**
-     * register method.
-     * @returns {any}
+     * Register authentication service bindings.
      */
-    register() {
+    public register(): void {
         this.registerAuthenticator();
-
     }
 
     /**
-     * registerAuthenticator method.
-     * @returns {any}
+     * Register the authenticator manager singleton.
      */
-    registerAuthenticator() {
-        this.$app.singleton('auth', function($app) {
+    public registerAuthenticator(): void {
+        this.$app.singleton('auth', function ($app: any) {
             return new AuthManager($app);
         });
-
     }
+
     /**
-     * boot method.
-     * @returns {any}
+     * Bootstrap the authentication services.
      */
-    boot() {
-        this.$app.singleton('auth.driver', function($app) {
+    public boot(): void {
+        this.$app.singleton('auth.driver', function ($app: any) {
             return $app['auth'].guard();
         });
     }
 
     /**
-     * registerUserResolver method.
-     * @returns {any}
+     * Register the authenticatable user resolver.
      */
-    registerUserResolver() {
-        this.$app.bind('@ostro/contracts/auth/authenticatable', function($app) {
+    public registerUserResolver(): void {
+        this.$app.bind('@ostro/contracts/auth/authenticatable', function ($app: any) {
             return call_user_func($app['auth'].userResolver());
         });
     }
 
     /**
-     * registerRequestRebindHandler method.
-     * @returns {any}
+     * Register the request rebinding handler.
      */
-    registerRequestRebindHandler() {
-        this.$app.rebinding('request', function($app, $request) {
-            $request.setUserResolver(function($guard = null) {
+    public registerRequestRebindHandler(): void {
+        this.$app.rebinding('request', function ($app: any, $request: any) {
+            $request.setUserResolver(function ($guard: any = null) {
                 return call_user_func($app['auth'].userResolver(), $guard);
             });
         });
     }
-
 }
 
-module.exports = AuthServiceProvider
+export = AuthServiceProvider;

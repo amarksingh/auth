@@ -1,117 +1,122 @@
 import type { IGenericUser } from '@ostro/contracts/auth/genericUser';
 
-const GenericUserInterface = require('@ostro/contracts/auth/genericUser');
-
 /**
  * Class GenericUser.
  */
-class GenericUser extends GenericUserInterface implements IGenericUser {
-    $attributes: Record<string, any>;
+class GenericUser implements IGenericUser {
+    [key: string]: any;
+
+    public $attributes: Record<string, any>;
 
     /**
-     * Create a new instance.
-     * @param {Record<string, any>} $attributes
+     * Create a new generic user instance.
+     *
+     * @param $attributes - User attributes dictionary
      */
-    constructor($attributes: Record<string, any>) {
-        super();
+    constructor($attributes: Record<string, any> = {}) {
         this.$attributes = $attributes;
     }
 
     /**
-     * getAuthIdentifierName method.
-     * @returns {any}
+     * Get the name of the unique identifier for the user.
+     *
+     * @returns The auth identifier key name
      */
-    getAuthIdentifierName() {
+    public getAuthIdentifierName(): string {
         return 'id';
     }
 
     /**
-     * getAuthIdentifier method.
-     * @returns {any}
+     * Get the unique identifier for the user.
+     *
+     * @returns The unique identifier value
      */
-    getAuthIdentifier() {
+    public getAuthIdentifier(): any {
         return this.$attributes[this.getAuthIdentifierName()];
     }
 
     /**
-     * getAuthPassword method.
-     * @returns {any}
+     * Get the password for the user.
+     *
+     * @returns The hashed password
      */
-    getAuthPassword() {
+    public getAuthPassword(): any {
         return this.$attributes['password'];
     }
 
     /**
-     * getRememberToken method.
-     * @returns {any}
+     * Get the token value for the "remember me" session.
+     *
+     * @returns The remember token
      */
-    getRememberToken() {
+    public getRememberToken(): any {
         return this.$attributes[this.getRememberTokenName()];
     }
 
     /**
-     * setRememberToken method.
-     * @param {*} $value
-     * @returns {any}
+     * Set the token value for the "remember me" session.
+     *
+     * @param $value - The remember token value
      */
-    setRememberToken($value: any) {
+    public setRememberToken($value: any): void {
         this.$attributes[this.getRememberTokenName()] = $value;
     }
 
     /**
-     * getRememberTokenName method.
-     * @returns {any}
+     * Get the column name for the "remember me" token.
+     *
+     * @returns The remember token column name
      */
-    getRememberTokenName() {
+    public getRememberTokenName(): string {
         return 'remember_token';
     }
 
     /**
-     * setApiToken method.
-     * @param {*} $value
-     * @returns {any}
+     * Set the token value for the API session.
+     *
+     * @param $value - The API token value
      */
-    setApiToken($value: any) {
+    public setApiToken($value: any): void {
         this.$attributes[this.getApiTokenName()] = $value;
     }
 
     /**
-     * getApiTokenName method.
-     * @returns {any}
+     * Get the column name for the API token.
+     *
+     * @returns The API token column name
      */
-    getApiTokenName() {
+    public getApiTokenName(): string {
         return 'api_token';
     }
 
     /**
-     * toJSON method.
-     * @returns {any}
+     * Convert the user instance to JSON.
+     *
+     * @returns Attributes object
      */
-    toJSON() {
-        return this.$attributes
+    public toJSON(): Record<string, any> {
+        return this.$attributes;
     }
 
-
     /**
-     * __get method.
-     * @param {*} $key
-     * @returns {any}
+     * Magic getter for attributes.
+     *
+     * @param $key - Attribute name
+     * @returns Attribute value
      */
-    __get($key: string) {
+    public __get($key: string): any {
         return this.$attributes[$key];
     }
 
     /**
-     * __set method.
-     * @param {*} $key
-     * @param {*} $value
-     * @returns {any}
+     * Magic setter for attributes.
+     *
+     * @param $key - Attribute name
+     * @param $value - Attribute value
      */
-    __set($key: string, $value: any) {
+    public __set($key: string, $value: any): void {
         this.$attributes[$key] = $value;
     }
-
-
 }
 
-module.exports = GenericUser
+export = GenericUser;

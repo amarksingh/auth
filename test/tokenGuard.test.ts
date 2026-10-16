@@ -1,5 +1,5 @@
-require('@ostro/support/helpers');
-const TokenGuard = require('../tokenGuard');
+import '@ostro/support/helpers';
+import TokenGuard from '../tokenGuard';
 
 describe('TokenGuard Unit Tests', () => {
     let mockProvider;

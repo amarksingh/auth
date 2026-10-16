@@ -1,29 +1,31 @@
+import { empty, count, is_array, is_null } from '@ostro/support/function';
+
 /**
  * Class EloquentUserProvider.
  */
 class EloquentUserProvider {
-
-    $model;
-
-    $hasher;
+    public $model: any;
+    public $hasher: any;
 
     /**
-     * Create a new instance.
-     * @param {*} $hasher
-     * @param {*} $model
+     * Create a new Eloquent user provider.
+     *
+     * @param $hasher - Hasher implementation
+     * @param $model - Eloquent model class or constructor
      */
-    constructor($hasher: boolean, $model: any) {
+    constructor($hasher: any, $model: any) {
         this.$model = $model;
         this.$hasher = $hasher;
     }
 
     /**
-     * retrieveById method.
-     * @param {*} $identifier
-     * @returns {any}
+     * Retrieve a user by their unique identifier.
+     *
+     * @param $identifier - Primary key value
+     * @returns Query promise resolving to user model
      */
-    retrieveById($identifier: string) {
-        let $model = this.createModel();
+    public retrieveById($identifier: any): any {
+        const $model = this.createModel();
 
         return this.newModelQuery($model)
             .where($model.getAuthIdentifierName(), $identifier)
@@ -31,58 +33,59 @@ class EloquentUserProvider {
     }
 
     /**
-     * retrieveByToken method.
-     * @async
-     * @param {*} $identifier
-     * @param {*} $token
-     * @returns {any}
+     * Retrieve a user by their unique identifier and "remember me" token.
+     *
+     * @param $identifier - Primary key value
+     * @param $token - Remember token string
+     * @returns Retrieved model or null
      */
-    async retrieveByToken($identifier: string, $token: string) {
-        let $model = this.createModel();
+    public async retrieveByToken($identifier: string, $token: string): Promise<any> {
+        const $model = this.createModel();
 
-        let $retrievedModel = await this.newModelQuery($model).where(
-            $model.getAuthIdentifierName(), $identifier
-        ).first();
+        const $retrievedModel = await this.newModelQuery($model)
+            .where($model.getAuthIdentifierName(), $identifier)
+            .first();
 
         if (!$retrievedModel) {
             return;
         }
 
-        let $rememberToken = $retrievedModel.getRememberToken();
-        return $rememberToken && $rememberToken == $token ?
-            $retrievedModel : null;
+        const $rememberToken = $retrievedModel.getRememberToken();
+        return $rememberToken && $rememberToken == $token ? $retrievedModel : null;
     }
 
     /**
-     * updateRememberToken method.
-     * @param {*} $user
-     * @param {*} $token
-     * @returns {any}
+     * Update the "remember me" token for the given user in storage.
+     *
+     * @param $user - User model
+     * @param $token - New remember token
+     * @returns Save promise
      */
-    updateRememberToken($user: Record<string, any>, $token: string) {
+    public updateRememberToken($user: Record<string, any>, $token: string): any {
         $user.setRememberToken($token);
 
         return $user.save();
-
     }
 
     /**
-     * retrieveByCredentials method.
-     * @param {*} $credentials
-     * @returns {any}
+     * Retrieve a user by the given credentials.
+     *
+     * @param $credentials - User credentials dictionary
+     * @returns Query promise resolving to user model
      */
-    retrieveByCredentials($credentials: Record<string, any>) {
-        if (empty($credentials) ||
-            (count($credentials) === 1 &&
-                String.contains(this.firstCredentialKey($credentials), 'password'))) {
+    public retrieveByCredentials($credentials: Record<string, any>): any {
+        if (
+            empty($credentials) ||
+            (count($credentials) === 1 && (String as any).contains(this.firstCredentialKey($credentials), 'password'))
+        ) {
             return;
         }
 
-        let $query = this.newModelQuery();
+        const $query = this.newModelQuery();
 
-        for (let $key in $credentials) {
-            let $value = $credentials[$key]
-            if (String.contains($key, 'password')) {
+        for (const $key in $credentials) {
+            const $value = $credentials[$key];
+            if ((String as any).contains($key, 'password')) {
                 continue;
             }
             if (is_array($value) || $value instanceof Array) {
@@ -96,83 +99,89 @@ class EloquentUserProvider {
     }
 
     /**
-     * firstCredentialKey method.
-     * @param {*} $credentials
-     * @returns {any}
+     * Get the first credential key from credentials object.
+     *
+     * @param $credentials - User credentials
+     * @returns First key name or undefined
      */
-    firstCredentialKey($credentials: Record<string, any>) {
-        for (let $key in $credentials) {
+    public firstCredentialKey($credentials: Record<string, any>): string | undefined {
+        for (const $key in $credentials) {
             return $key;
         }
     }
 
     /**
-     * validateCredentials method.
-     * @param {*} $user
-     * @param {*} $credentials
-     * @returns {any}
+     * Validate a user against the given credentials.
+     *
+     * @param $user - User model
+     * @param $credentials - User credentials
+     * @returns True if password matches
      */
-    validateCredentials($user: Record<string, any>, $credentials: Record<string, any>) {
-        let $plain = $credentials['password'];
+    public validateCredentials($user: Record<string, any>, $credentials: Record<string, any>): boolean {
+        const $plain = $credentials['password'];
         return this.$hasher.check($plain, $user.getAuthPassword());
     }
 
     /**
-     * newModelQuery method.
-     * @param {*} $model
-     * @returns {any}
+     * Get a new query builder for the model instance.
+     *
+     * @param $model - Optional model instance
+     * @returns Query builder instance
      */
-    newModelQuery($model: any = null) {
-        return is_null($model) ?
-            this.createModel().newQuery() :
-            $model.newQuery();
+    public newModelQuery($model: any = null): any {
+        return is_null($model) ? this.createModel().newQuery() : $model.newQuery();
     }
 
     /**
-     * createModel method.
-     * @returns {any}
+     * Create a new instance of the model.
+     *
+     * @returns New model instance
      */
-    createModel() {
-        return new this.$model;
+    public createModel(): any {
+        return new this.$model();
     }
 
     /**
-     * getHasher method.
-     * @returns {any}
+     * Get the hasher implementation.
+     *
+     * @returns Hasher instance
      */
-    getHasher() {
+    public getHasher(): any {
         return this.$hasher;
     }
 
     /**
-     * setHasher method.
-     * @param {*} $hasher
-     * @returns {any}
+     * Set the hasher implementation.
+     *
+     * @param $hasher - Hasher instance
+     * @returns Current instance
      */
-    setHasher($hasher: boolean) {
+    public setHasher($hasher: any): this {
         this.$hasher = $hasher;
 
         return this;
     }
 
     /**
-     * getModel method.
-     * @returns {any}
+     * Get the model class name or constructor.
+     *
+     * @returns Model constructor
      */
-    getModel() {
+    public getModel(): any {
         return this.$model;
     }
 
     /**
-     * setModel method.
-     * @param {*} $model
-     * @returns {any}
+     * Set the model class name or constructor.
+     *
+     * @param $model - Model constructor
+     * @returns Current instance
      */
-    setModel($model: any) {
+    public setModel($model: any): this {
         this.$model = $model;
 
         return this;
     }
 }
 
-module.exports = EloquentUserProvider
+export = EloquentUserProvider;

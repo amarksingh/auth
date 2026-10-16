@@ -1,67 +1,75 @@
+import { is_string, count, trim } from '@ostro/support/function';
+
 /**
  * Class Recaller.
  */
 class Recaller {
-
-    $recaller;
+    public $recaller: any;
 
     /**
-     * Create a new instance.
-     * @param {*} $recaller
+     * Create a new recaller instance.
+     *
+     * @param $recaller - Raw recaller string
      */
     constructor($recaller: any) {
         this.$recaller = $recaller;
     }
 
     /**
-     * id method.
-     * @returns {any}
+     * Get the user ID from the recaller string.
+     *
+     * @returns User ID segment
      */
-    id() {
+    public id(): string {
         return this.$recaller.split('|')[0];
     }
 
     /**
-     * token method.
-     * @returns {any}
+     * Get the token from the recaller string.
+     *
+     * @returns Token segment
      */
-    token() {
+    public token(): string {
         return this.$recaller.split('|')[1];
     }
 
     /**
-     * hash method.
-     * @returns {any}
+     * Get the password hash from the recaller string.
+     *
+     * @returns Password hash segment
      */
-    hash() {
+    public hash(): string {
         return this.$recaller.split('|')[2];
     }
 
     /**
-     * valid method.
-     * @returns {any}
+     * Determine if the recaller is valid.
+     *
+     * @returns True if properly formatted with all segments
      */
-    valid() {
+    public valid(): boolean {
         return this.properString() && this.hasAllSegments();
     }
 
     /**
-     * properString method.
-     * @returns {any}
+     * Determine if the recaller is a valid string.
+     *
+     * @returns True if string contains a pipe separator
      */
-    properString() {
-        return is_string(this.$recaller) && String.contains(this.$recaller, '|');
+    public properString(): boolean {
+        return is_string(this.$recaller) && (String as any).contains(this.$recaller, '|');
     }
 
     /**
-     * hasAllSegments method.
-     * @returns {any}
+     * Determine if the recaller has all required segments.
+     *
+     * @returns True if 3 non-empty ID and token segments exist
      */
-    hasAllSegments() {
-        let $segments = this.$recaller.split('|');
+    public hasAllSegments(): boolean {
+        const $segments = this.$recaller.split('|');
 
         return count($segments) === 3 && trim($segments[0]) !== '' && trim($segments[1]) !== '';
     }
 }
 
-module.exports = Recaller
+export = Recaller;

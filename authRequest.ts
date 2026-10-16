@@ -1,53 +1,60 @@
-const { Macroable } = require('@ostro/support/macro')
+import { Macroable } from '@ostro/support/macro';
 
 /**
  * Class Auth.
  */
 class Auth extends Macroable {
+    public $request: any;
+    public $manager: any;
+    public $defaultGuard: string;
+    public $guards: Record<string, any>;
 
     /**
-     * Create a new instance.
-     * @param {*} request
-     * @param {*} manager
+     * Create a new auth request instance.
+     *
+     * @param request - HTTP request instance
+     * @param manager - Auth manager instance
      */
     constructor(request: any, manager: any) {
-        super()
+        super();
         Object.defineProperties(this, {
             $request: {
-                value: request
+                value: request,
             },
             $manager: {
                 value: manager,
             },
             $defaultGuard: {
                 value: manager.getDefaultDriver(),
-                writable: true
+                writable: true,
             },
             $guards: {
                 value: {},
-                writable: true
-            }
-        })
+                writable: true,
+            },
+        });
     }
 
     /**
-     * guard method.
-     * @param {*} $name
-     * @returns {any}
+     * Resolve the given guard instance by name.
+     *
+     * @param $name - Guard name
+     * @returns Guard instance
      */
-    guard($name: string) {
+    public guard($name?: string): any {
         if (!$name) {
-            $name = this.$defaultGuard
+            $name = this.$defaultGuard;
         }
-        return this.$guards[$name] = this.$guards[$name] || this.$manager.guard($name)(this.$request)
+        return (this.$guards[$name] = this.$guards[$name] || this.$manager.guard($name)(this.$request));
     }
 
     /**
-     * shouldUse method.
-     * @param {*} $name
-     * @returns {any}
+     * Set the default guard and return its user.
+     *
+     * @param $name - Guard name
+     * @returns The user instance
      */
-    shouldUse($name: string) {
+    public shouldUse($name?: string): any {
         $name = $name || this.$defaultGuard;
 
         this.setDefaultDriverForCurrentRequest($name);
@@ -56,23 +63,24 @@ class Auth extends Macroable {
     }
 
     /**
-     * setDefaultDriverForCurrentRequest method.
-     * @param {*} $name
-     * @returns {any}
+     * Set the default guard driver for the current request.
+     *
+     * @param $name - Guard name
      */
-    setDefaultDriverForCurrentRequest($name: string) {
+    public setDefaultDriverForCurrentRequest($name: string): void {
         this.$defaultGuard = $name;
     }
 
     /**
-     * __get method.
-     * @param {*} target
-     * @param {*} method
-     * @returns {any}
+     * Magic getter to forward calls to default guard.
+     *
+     * @param target - Target object
+     * @param method - Method name
+     * @returns Resolved property or method
      */
-    __get(target: Record<string, any>, method: string) {
-        return this.make(target.guard(this.$defaultGuard), method)
+    public __get(target: Record<string, any>, method: string): any {
+        return this.make(target.guard(this.$defaultGuard), method);
     }
-
 }
-module.exports = Auth
+
+export = Auth;

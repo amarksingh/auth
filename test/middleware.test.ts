@@ -1,9 +1,9 @@
-require('@ostro/support/helpers');
-const Authenticate = require('../middleware/authenticate');
-const RedirectIfAuthenticated = require('../middleware/redirectIfAuthenticated');
-const StartAuth = require('../middleware/startAuth');
-const AuthenticationException = require('../authenticationException');
-const AuthManager = require('../authManager');
+import '@ostro/support/helpers';
+import Authenticate from '../middleware/authenticate';
+import RedirectIfAuthenticated from '../middleware/redirectIfAuthenticated';
+import StartAuth from '../middleware/startAuth';
+import AuthenticationException from '../authenticationException';
+import AuthManager from '../authManager';
 
 describe('Middleware Multi-Scenario Unit Tests', () => {
 

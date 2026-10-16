@@ -1,33 +1,35 @@
-const GuardHelpers = require('./guardHelpers')
-const { implement } = require('@ostro/support/function')
-const { createHash } = require('crypto');
-const Crypt = require('@ostro/support/facades/crypt')
+import GuardHelpers = require('./guardHelpers');
+import { createHash } from 'crypto';
+import { is_null, empty } from '@ostro/support/function';
 
 /**
  * Class TokenGuard.
  */
 class TokenGuard extends GuardHelpers {
-
-    $hash;
-
-    $request;
-
-    $provider;
-
-    $inputKey = 'api_token';
-
-    $storageKey = 'api_token';
+    public $hash: boolean;
+    public $request: any;
+    public $provider: any;
+    public $inputKey: string = 'api_token';
+    public $storageKey: string = 'api_token';
+    public $lastAttempted: any;
 
     /**
-     * Create a new instance.
-     * @param {*} $provider
-     * @param {*} $request
-     * @param {*} $inputKey
-     * @param {*} $storageKey
-     * @param {*} $hash
+     * Create a new token guard instance.
+     *
+     * @param $provider - User provider instance
+     * @param $request - Request instance
+     * @param $inputKey - Token input key name
+     * @param $storageKey - Storage column key name
+     * @param $hash - Whether tokens are hashed
      */
-    constructor($provider: any, $request: any, $inputKey: string = 'api_token', $storageKey: string = 'api_token', $hash: boolean = false) {
-        super()
+    constructor(
+        $provider: any,
+        $request: any,
+        $inputKey: string = 'api_token',
+        $storageKey: string = 'api_token',
+        $hash: boolean = false
+    ) {
+        super();
         this.$hash = $hash;
         this.$request = $request;
         this.$provider = $provider;
@@ -36,25 +38,24 @@ class TokenGuard extends GuardHelpers {
     }
 
     /**
-     * hasValidCredentials method.
-     * @async
-     * @param {*} $user
-     * @param {*} $credentials
-     * @returns {any}
+     * Determine if the user matches credentials.
+     *
+     * @param $user - User instance
+     * @param $credentials - User credentials
+     * @returns True if valid credentials
      */
-    async hasValidCredentials($user: Record<string, any>, $credentials: Record<string, any>) {
-        return !is_null($user) && await this.$provider.validateCredentials($user, $credentials);
-
+    public async hasValidCredentials($user: any, $credentials: Record<string, any>): Promise<boolean> {
+        return !is_null($user) && (await this.$provider.validateCredentials($user, $credentials));
     }
 
     /**
-     * attempt method.
-     * @async
-     * @param {*} $credentials
-     * @returns {any}
+     * Attempt to authenticate a user using the given credentials.
+     *
+     * @param $credentials - User credentials
+     * @returns True if authentication succeeded
      */
-    async attempt($credentials: Record<string, any> = {}) {
-        let $user = await this.$provider.retrieveByCredentials($credentials);
+    public async attempt($credentials: Record<string, any> = {}): Promise<boolean> {
+        const $user = await this.$provider.retrieveByCredentials($credentials);
         this.$lastAttempted = $user;
 
         if (await this.hasValidCredentials($user, $credentials)) {
@@ -68,33 +69,33 @@ class TokenGuard extends GuardHelpers {
     }
 
     /**
-     * user method.
-     * @async
-     * @returns {any}
+     * Get the currently authenticated user.
+     *
+     * @returns Authenticated user or null
      */
-    async user() {
-
+    public async user(): Promise<any> {
         if (!is_null(this.$user)) {
             return this.$user;
         }
 
         let $user = null;
 
-        let $token = this.getTokenForRequest();
+        const $token = this.getTokenForRequest();
         if (!empty($token)) {
             $user = await this.$provider.retrieveByCredentials({
                 [this.$storageKey]: this.$hash ? createHash('sha256').update($token).digest('hex') : $token,
             });
         }
 
-        return this.$user = $user;
+        return (this.$user = $user);
     }
 
     /**
-     * getTokenForRequest method.
-     * @returns {any}
+     * Get the token for the current request.
+     *
+     * @returns Token string or null
      */
-    getTokenForRequest() {
+    public getTokenForRequest(): string | null | undefined {
         let $token = this.$request.getQuery(this.$inputKey);
         if (empty($token)) {
             $token = this.$request.input(this.$inputKey);
@@ -112,28 +113,26 @@ class TokenGuard extends GuardHelpers {
     }
 
     /**
-     * validate method.
-     * @async
-     * @param {*} $credentials
-     * @returns {any}
+     * Validate a user's credentials.
+     *
+     * @param $credentials - User credentials
+     * @returns True if credentials are valid
      */
-    async validate($credentials: Record<string, any> = {}) {
-
+    public async validate($credentials: Record<string, any> = {}): Promise<boolean> {
         if (empty($credentials[this.$inputKey])) {
             return false;
         }
 
-        $credentials = {
-            [this.$storageKey]: $credentials[this.$inputKey]
+        const creds = {
+            [this.$storageKey]: $credentials[this.$inputKey],
         };
 
-        if (await this.$provider.retrieveByCredentials($credentials)) {
+        if (await this.$provider.retrieveByCredentials(creds)) {
             return true;
         }
 
         return false;
     }
-
 }
 
-module.exports = TokenGuard
+export = TokenGuard;

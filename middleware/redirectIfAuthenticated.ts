@@ -1,28 +1,40 @@
+import { empty } from '@ostro/support/function';
+
 /**
  * Class RedirectIfAuthenticated.
  */
 class RedirectIfAuthenticated {
+    public $guards: (string | null)[];
+
     /**
-     * Create a new instance.
-     * @param {*} $guards
+     * Create a new RedirectIfAuthenticated middleware instance.
+     *
+     * @param $guards - List of guards to verify
      */
     constructor(...$guards: any[]) {
         this.$guards = $guards;
     }
 
     /**
-     * handle method.
-     * @async
-     * @param {*} { request
-     * @param {*} next
-     * @param {*} auth
-     * @param {*} redirect }
-     * @returns {any}
+     * Handle an incoming request.
+     *
+     * @param context - Request context containing request, next, auth and redirect
+     * @returns Next result or redirect response
      */
-    async handle({ request, next, auth, redirect }: Record<string, any>) {
-        let $guards = empty(this.$guards) ? [null] : this.$guards;
+    public async handle({
+        request,
+        next,
+        auth,
+        redirect,
+    }: {
+        request: any;
+        next: () => any;
+        auth: any;
+        redirect: any;
+    }): Promise<any> {
+        const $guards = empty(this.$guards) ? [null] : this.$guards;
 
-        for (let $guard of $guards) {
+        for (const $guard of $guards) {
             if (await auth.guard($guard).check()) {
                 return redirect.to(this.redirectTo(request));
             }
@@ -32,13 +44,14 @@ class RedirectIfAuthenticated {
     }
 
     /**
-     * redirectTo method.
-     * @param {*} $request
-     * @returns {any}
+     * Get the default redirection path when authenticated.
+     *
+     * @param $request - Request instance
+     * @returns Redirect URL path
      */
-    redirectTo($request: any) {
+    public redirectTo($request: any): string {
         return '/';
     }
 }
 
-module.exports = RedirectIfAuthenticated
+export = RedirectIfAuthenticated;

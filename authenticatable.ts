@@ -4,100 +4,108 @@ import type { IAuthenticatable } from '@ostro/contracts/auth/authenticatable';
  * Class Authenticatable.
  */
 class Authenticatable implements IAuthenticatable {
+    [key: string]: any;
 
-    $rememberTokenName: string = 'remember_token';
-    
-    $apiTokenName: string = 'api_token';
+    public $rememberTokenName: string = 'remember_token';
+    public $apiTokenName: string = 'api_token';
 
     /**
-     * getAuthIdentifierName method.
-     * @returns {any}
+     * Get the name of the unique identifier for the user.
+     *
+     * @returns The auth identifier column/field name
      */
-    getAuthIdentifierName() {
+    public getAuthIdentifierName(): string {
         return this.getKeyName();
     }
 
     /**
-     * getAuthIdentifier method.
-     * @returns {any}
+     * Get the unique identifier for the user.
+     *
+     * @returns The unique identifier value
      */
-    getAuthIdentifier() {
+    public getAuthIdentifier(): any {
         return this[this.getAuthIdentifierName()];
     }
 
     /**
-     * getAuthIdentifierForBroadcasting method.
-     * @returns {any}
+     * Get the unique broadcast identifier for the user.
+     *
+     * @returns The broadcast identifier value
      */
-    getAuthIdentifierForBroadcasting() {
+    public getAuthIdentifierForBroadcasting(): any {
         return this.getAuthIdentifier();
     }
 
     /**
-     * getAuthPassword method.
-     * @returns {any}
+     * Get the password for the user.
+     *
+     * @returns The user's hashed password
      */
-    getAuthPassword() {
+    public getAuthPassword(): any {
         return this.password;
     }
 
     /**
-     * getRememberToken method.
-     * @returns {any}
+     * Get the token value for the "remember me" session.
+     *
+     * @returns The remember token string or undefined
      */
-    getRememberToken() {
+    public getRememberToken(): any {
         if (this.getRememberTokenName()) {
             return this[this.getRememberTokenName()];
         }
     }
 
     /**
-     * setRememberToken method.
-     * @param {*} $value
-     * @returns {any}
+     * Set the token value for the "remember me" session.
+     *
+     * @param value - The remember token value
      */
-    setRememberToken($value: any) {
+    public setRememberToken(value: any): void {
         if (this.getRememberTokenName()) {
-            this[this.getRememberTokenName()] = $value;
+            this[this.getRememberTokenName()] = value;
         }
     }
 
     /**
-     * getRememberTokenName method.
-     * @returns {any}
+     * Get the column name for the "remember me" token.
+     *
+     * @returns The remember token column name
      */
-    getRememberTokenName() {
+    public getRememberTokenName(): string {
         return this.$rememberTokenName;
     }
 
     /**
-     * getApiToken method.
-     * @returns {any}
+     * Get the token value for the API session.
+     *
+     * @returns The API token string or undefined
      */
-    getApiToken() {
+    public getApiToken(): any {
         if (this.getApiTokenName()) {
             return this[this.getApiTokenName()];
         }
     }
 
     /**
-     * setApiToken method.
-     * @param {*} $value
-     * @returns {any}
+     * Set the token value for the API session.
+     *
+     * @param value - The API token value
      */
-    setApiToken($value: any) {
+    public setApiToken(value: any): void {
         if (this.getApiTokenName()) {
-            this[this.getApiTokenName()] = $value;
+            this[this.getApiTokenName()] = value;
         }
     }
 
     /**
-     * getApiTokenName method.
-     * @returns {any}
+     * Get the column name for the API token.
+     *
+     * @returns The API token column name
      */
-    getApiTokenName() {
+    public getApiTokenName(): string {
         return this.$apiTokenName;
     }
 }
 
-module.exports = Authenticatable
+export = Authenticatable;

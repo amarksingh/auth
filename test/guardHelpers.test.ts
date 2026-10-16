@@ -1,6 +1,6 @@
-require('@ostro/support/helpers');
-const GuardHelpers = require('../guardHelpers');
-const AuthenticationException = require('../authenticationException');
+import '@ostro/support/helpers';
+import GuardHelpers from '../guardHelpers';
+import AuthenticationException from '../authenticationException';
 
 class TestGuard extends GuardHelpers {
     constructor(user = null, provider = null) {
