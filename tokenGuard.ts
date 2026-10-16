@@ -8,7 +8,7 @@ import { is_null, empty } from '@ostro/support/function';
 class TokenGuard extends GuardHelpers {
     public $hash: boolean;
     public $request: any;
-    public $provider: any;
+    declare public $provider: any;
     public $inputKey: string = 'api_token';
     public $storageKey: string = 'api_token';
     public $lastAttempted: any;

@@ -10,7 +10,6 @@ const uid = uidSafe.sync;
 
 // Framework globals registered by OstroJS at boot time
 declare const UnauthorizedHttpException: any;
-declare const InvalidArgumentException: any;
 
 /**
  * Class SessionGuard.
@@ -25,7 +24,7 @@ class SessionGuard extends GuardHelpers {
     public $request: any;
     public $guardName: string;
     public $session: any;
-    public $provider: any;
+    declare public $provider: any;
     public $cookie: any;
 
     /**

@@ -34,6 +34,11 @@ module.exports = {
         "!<rootDir>/node_modules/**",
         "!<rootDir>/test/**",
         "!<rootDir>/coverage/**",
+        "!<rootDir>/build/**",
         "!<rootDir>/jest.config.js"
+    ],
+    "testPathIgnorePatterns": [
+        "/node_modules/",
+        "/build/"
     ]
 };
