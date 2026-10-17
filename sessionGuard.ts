@@ -1,5 +1,6 @@
 import GuardHelpers from './guardHelpers';
-import uidSafe from 'uid-safe';
+import * as uidSafeModule from 'uid-safe';
+const uidSafe: any = (uidSafeModule as any).default || uidSafeModule;
 import Recaller from './recaller';
 import Session from '@ostro/contracts/session/session';
 import Hash from '@ostro/support/facades/hash';
