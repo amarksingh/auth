@@ -1,8 +1,8 @@
 import '@ostro/support/helpers';
-import Authenticatable from '../authenticatable';
-import AuthenticationException from '../authenticationException';
-import GenericUser from '../genericUser';
-import Recaller from '../recaller';
+import Authenticatable from '../src/authenticatable';
+import AuthenticationException from '../src/authenticationException';
+import GenericUser from '../src/genericUser';
+import Recaller from '../src/recaller';
 
 describe('Authenticatable Trait/Class', () => {
     class User extends Authenticatable {

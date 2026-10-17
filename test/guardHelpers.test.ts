@@ -1,6 +1,6 @@
 import '@ostro/support/helpers';
-import GuardHelpers from '../guardHelpers';
-import AuthenticationException from '../authenticationException';
+import GuardHelpers from '../src/guardHelpers';
+import AuthenticationException from '../src/authenticationException';
 
 class TestGuard extends GuardHelpers {
     constructor(user = null, provider = null) {

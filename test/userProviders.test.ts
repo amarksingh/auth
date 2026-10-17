@@ -1,7 +1,7 @@
 import '@ostro/support/helpers';
-import DatabaseUserProvider from '../databaseUserProvider';
-import EloquentUserProvider from '../eloquentUserProvider';
-import GenericUser from '../genericUser';
+import DatabaseUserProvider from '../src/databaseUserProvider';
+import EloquentUserProvider from '../src/eloquentUserProvider';
+import GenericUser from '../src/genericUser';
 
 describe('DatabaseUserProvider & EloquentUserProvider Unit Tests', () => {
     let mockConn;

@@ -1,7 +1,7 @@
 import '@ostro/support/helpers';
-import AuthManager from '../authManager';
-import AuthRequest from '../authRequest';
-import AuthServiceProvider from '../authServiceProvider';
+import AuthManager from '../src/authManager';
+import AuthRequest from '../src/authRequest';
+import AuthServiceProvider from '../src/authServiceProvider';
 import InvalidArgumentException from '@ostro/support/exceptions/invalidArgumentException';
 
 describe('AuthManager & AuthRequest Unit Tests', () => {

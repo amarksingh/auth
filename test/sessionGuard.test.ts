@@ -1,5 +1,5 @@
 import '@ostro/support/helpers';
-import SessionGuard from '../sessionGuard';
+import SessionGuard from '../src/sessionGuard';
 import Session from '@ostro/contracts/session/session';
 import Hash from '@ostro/support/facades/hash';
 

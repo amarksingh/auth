@@ -1,5 +1,5 @@
 import '@ostro/support/helpers';
-import TokenGuard from '../tokenGuard';
+import TokenGuard from '../src/tokenGuard';
 
 describe('TokenGuard Unit Tests', () => {
     let mockProvider;

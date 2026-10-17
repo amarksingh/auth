@@ -1,9 +1,9 @@
 import '@ostro/support/helpers';
-import Authenticate from '../middleware/authenticate';
-import RedirectIfAuthenticated from '../middleware/redirectIfAuthenticated';
-import StartAuth from '../middleware/startAuth';
-import AuthenticationException from '../authenticationException';
-import AuthManager from '../authManager';
+import Authenticate from '../src/middleware/authenticate';
+import RedirectIfAuthenticated from '../src/middleware/redirectIfAuthenticated';
+import StartAuth from '../src/middleware/startAuth';
+import AuthenticationException from '../src/authenticationException';
+import AuthManager from '../src/authManager';
 
 describe('Middleware Multi-Scenario Unit Tests', () => {
 
