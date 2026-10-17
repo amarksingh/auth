@@ -49,5 +49,9 @@
   "bugs": {
     "url": "https://github.com/ostrojs/auth/issues"
   },
-  "homepage": "https://github.com/ostrojs/auth#readme"
+  "homepage": "https://github.com/ostrojs/auth#readme",
+  "devDependencies": {
+    "typescript": "^5.8.0",
+    "@types/node": "^22.0.0"
+  }
 }
