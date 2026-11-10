@@ -15,6 +15,7 @@ class GenericUser implements IGenericUser {
      */
     constructor($attributes: Record<string, any> = {}) {
         this.$attributes = $attributes;
+        Object.assign(this, $attributes);
     }
 
     /**
