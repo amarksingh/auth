@@ -1,5 +1,6 @@
 import AuthenticationException from './authenticationException';
 import { is_null } from '@ostro/support/function';
+import type { IAuthenticatable } from '@ostro/contracts/auth/authenticatable';
 
 /**
  * Class GuardHelpers.
@@ -64,8 +65,8 @@ abstract class GuardHelpers {
     public async id(): Promise<any> {
         const user = await this.user();
         if (user) {
-            return typeof user.getAuthIdentifier === 'function'
-                ? user.getAuthIdentifier()
+            return (user as IAuthenticatable).getAuthIdentifier
+                ? (user as IAuthenticatable).getAuthIdentifier()
                 : (user.$attributes?.id || user.$attributes?.sub || user.id || user.sub);
         }
     }
@@ -80,7 +81,7 @@ abstract class GuardHelpers {
         if (user) {
             return user.$attributes?.account_id
                 || user.$attributes?.accountId
-                || (typeof user.getAccountId === 'function' ? user.getAccountId() : undefined)
+                || (user.getAccountId ? user.getAccountId() : undefined)
                 || user.account_id
                 || user.accountId;
         }

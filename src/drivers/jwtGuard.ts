@@ -2,6 +2,9 @@ import GuardHelpers from '../guardHelpers';
 import GenericUser from '../genericUser';
 import { is_null, empty } from '@ostro/support/function';
 import { createHmac, randomUUID } from 'node:crypto';
+import type { IHttpRequest } from '@ostro/contracts/http/request';
+import type { IUserProvider } from '@ostro/contracts/auth/userProvider';
+import type { IAuthenticatable } from '@ostro/contracts/auth/authenticatable';
 
 export interface JwtOptions {
     secret: string;
@@ -28,8 +31,8 @@ export interface JwtPayload {
  */
 class JwtGuard extends GuardHelpers {
     public $secret: string;
-    public $request: any;
-    declare public $provider: any;
+    public $request?: IHttpRequest;
+    declare public $provider?: IUserProvider;
     public $inputKey: string;
     public $algorithm: string;
     public $issuer?: string;
@@ -63,25 +66,23 @@ class JwtGuard extends GuardHelpers {
     public getTokenForRequest(): string | null {
         let token: string | null = null;
 
-        if (typeof this.$request?.bearerToken === 'function') {
-            const bearer = this.$request.bearerToken();
-            if (bearer) token = bearer;
-        }
+        const bearer = this.$request?.bearerToken?.();
+        if (bearer) token = bearer;
 
         if (!token) {
-            const authHeader = typeof this.$request?.header === 'function' ? this.$request.header('authorization') : null;
-            if (authHeader && authHeader.toLowerCase().startsWith('bearer ')) {
+            const authHeader = this.$request?.header?.('authorization');
+            if (authHeader && typeof authHeader === 'string' && authHeader.toLowerCase().startsWith('bearer ')) {
                 token = authHeader.slice(7).trim();
             }
         }
 
-        if (!token && typeof this.$request?.input === 'function') {
-            const val = this.$request.input(this.$inputKey);
+        if (!token) {
+            const val = this.$request?.input?.(this.$inputKey);
             if (val) token = String(val);
         }
 
-        if (!token && typeof this.$request?.getQuery === 'function') {
-            const val = this.$request.getQuery(this.$inputKey);
+        if (!token) {
+            const val = this.$request?.getQuery?.(this.$inputKey);
             if (val) token = String(val);
         }
 
@@ -216,7 +217,7 @@ class JwtGuard extends GuardHelpers {
 
         let user = null;
         const sub = payload.sub || (payload as any).id;
-        if (this.$provider && typeof this.$provider.retrieveById === 'function' && sub) {
+        if (this.$provider?.retrieveById && sub) {
             try {
                 user = await this.$provider.retrieveById(sub);
             } catch {
@@ -245,9 +246,9 @@ class JwtGuard extends GuardHelpers {
         const user = await this.$provider.retrieveByCredentials(credentials);
         this.$lastAttempted = user;
 
-        if (user && (await this.$provider.validateCredentials(user, credentials))) {
+        if (user && (await this.$provider?.validateCredentials(user, credentials))) {
             this.$user = user;
-            const sub = typeof user.getAuthIdentifier === 'function' ? user.getAuthIdentifier() : (user.id || user._id);
+            const sub = (user as IAuthenticatable).getAuthIdentifier ? (user as IAuthenticatable).getAuthIdentifier() : (user.id || user._id);
             return this.sign({ sub, email: user.email, name: user.name, jti: randomUUID() });
         }
 
