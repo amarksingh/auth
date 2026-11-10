@@ -1,9 +1,10 @@
 import type { IGenericUser } from '@ostro/contracts/auth/genericUser';
+import { Macroable } from '@ostro/support/macro';
 
 /**
  * Class GenericUser.
  */
-class GenericUser implements IGenericUser {
+class GenericUser extends Macroable implements IGenericUser {
     [key: string]: any;
 
     public $attributes: Record<string, any>;
@@ -14,25 +15,12 @@ class GenericUser implements IGenericUser {
      * @param $attributes - User attributes dictionary
      */
     constructor($attributes: Record<string, any> = {}) {
-        this.$attributes = $attributes;
-        return new Proxy(this, {
-            get(target: any, prop: string | symbol) {
-                if (prop in target) {
-                    return target[prop];
-                }
-                if (typeof prop === 'string' && target.$attributes && prop in target.$attributes) {
-                    return target.$attributes[prop];
-                }
-                return undefined;
-            },
-            set(target: any, prop: string | symbol, value: any) {
-                if (prop in target) {
-                    target[prop] = value;
-                } else if (typeof prop === 'string') {
-                    target.$attributes[prop] = value;
-                }
-                return true;
-            }
+        super();
+        Object.defineProperty(this, '$attributes', {
+            value: $attributes,
+            writable: true,
+            enumerable: true,
+            configurable: true,
         });
     }
 
@@ -118,23 +106,37 @@ class GenericUser implements IGenericUser {
     }
 
     /**
-     * Magic getter for attributes.
+     * Magic getter for attributes via Macroable proxy.
      *
-     * @param $key - Attribute name
+     * @param target - Target instance or property name if called directly
+     * @param key - Attribute name if called via proxy
      * @returns Attribute value
      */
-    public __get($key: string): any {
-        return this.$attributes[$key];
+    public __get(target: any, key?: string): any {
+        if (typeof target === 'object' && target !== null && typeof key === 'string') {
+            return target.$attributes ? target.$attributes[key] : undefined;
+        }
+        return this.$attributes ? this.$attributes[target] : undefined;
     }
 
     /**
-     * Magic setter for attributes.
+     * Magic setter for attributes via Macroable proxy.
      *
-     * @param $key - Attribute name
-     * @param $value - Attribute value
+     * @param target - Target instance or property name if called directly
+     * @param keyOrValue - Attribute name if called via proxy, or value if called directly
+     * @param value - Attribute value if called via proxy
      */
-    public __set($key: string, $value: any): void {
-        this.$attributes[$key] = $value;
+    public __set(target: any, keyOrValue?: any, value?: any): any {
+        if (typeof target === 'object' && target !== null && typeof keyOrValue === 'string') {
+            if (target.$attributes) {
+                target.$attributes[keyOrValue] = value;
+            }
+        } else {
+            if (this.$attributes) {
+                this.$attributes[target] = keyOrValue;
+            }
+        }
+        return true;
     }
 }
 
