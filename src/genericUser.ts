@@ -15,6 +15,25 @@ class GenericUser implements IGenericUser {
      */
     constructor($attributes: Record<string, any> = {}) {
         this.$attributes = $attributes;
+        return new Proxy(this, {
+            get(target: any, prop: string | symbol) {
+                if (prop in target) {
+                    return target[prop];
+                }
+                if (typeof prop === 'string' && target.$attributes && prop in target.$attributes) {
+                    return target.$attributes[prop];
+                }
+                return undefined;
+            },
+            set(target: any, prop: string | symbol, value: any) {
+                if (prop in target) {
+                    target[prop] = value;
+                } else if (typeof prop === 'string') {
+                    target.$attributes[prop] = value;
+                }
+                return true;
+            }
+        });
     }
 
     /**
