@@ -32,7 +32,7 @@ export interface ClientCredentials {
  */
 class PassportGuard extends GuardHelpers {
     public $request?: IHttpRequest;
-    declare public $provider?: IUserProvider;
+    declare public $provider: IUserProvider;
     public $tokenRepository?: any;
     public $clientRepository?: any;
     public $inputKey: string = 'access_token';

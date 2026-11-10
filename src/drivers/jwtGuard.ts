@@ -32,7 +32,7 @@ export interface JwtPayload {
 class JwtGuard extends GuardHelpers {
     public $secret: string;
     public $request?: IHttpRequest;
-    declare public $provider?: IUserProvider;
+    declare public $provider: IUserProvider;
     public $inputKey: string;
     public $algorithm: string;
     public $issuer?: string;
