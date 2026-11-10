@@ -64,7 +64,19 @@ abstract class GuardHelpers {
     public async id(): Promise<any> {
         const user = await this.user();
         if (user) {
-            return user.getAuthIdentifier();
+            return typeof user.getAuthIdentifier === 'function' ? user.getAuthIdentifier() : (user.id || user.sub);
+        }
+    }
+
+    /**
+     * Get the account ID for the currently authenticated user.
+     *
+     * @returns The user's account identifier or undefined
+     */
+    public async accountId(): Promise<any> {
+        const user = await this.user();
+        if (user) {
+            return user.account_id || user.accountId || (typeof user.getAccountId === 'function' ? user.getAccountId() : undefined);
         }
     }
 
