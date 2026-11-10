@@ -64,7 +64,9 @@ abstract class GuardHelpers {
     public async id(): Promise<any> {
         const user = await this.user();
         if (user) {
-            return typeof user.getAuthIdentifier === 'function' ? user.getAuthIdentifier() : (user.id || user.sub);
+            return typeof user.getAuthIdentifier === 'function'
+                ? user.getAuthIdentifier()
+                : (user.$attributes?.id || user.$attributes?.sub || user.id || user.sub);
         }
     }
 
@@ -76,7 +78,11 @@ abstract class GuardHelpers {
     public async accountId(): Promise<any> {
         const user = await this.user();
         if (user) {
-            return user.account_id || user.accountId || (typeof user.getAccountId === 'function' ? user.getAccountId() : undefined);
+            return user.$attributes?.account_id
+                || user.$attributes?.accountId
+                || (typeof user.getAccountId === 'function' ? user.getAccountId() : undefined)
+                || user.account_id
+                || user.accountId;
         }
     }
 
